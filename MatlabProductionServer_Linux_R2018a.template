@@ -1,0 +1,562 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  
+  "Description": "MATLAB Production Server R2018a",
+
+  "Parameters" : {
+    "KeyPairName" : {
+      "Type": "AWS::EC2::KeyPair::KeyName",
+      "Description" : "Enter the Key Pair Name to be used for all EC2 instances. The name must match an existing entry in the EC2 console's Network & Security >> Key Pairs window.",
+      "ConstraintDescription": "Must be the name of an existing EC2 Key Pair."
+    },
+    "SSLCertificateARN": {
+      "Description": "(Optional) Enter the ARN to be used for HTTPS connections to the MPS Endpoint. If provided, the ARN must match an existing certificate in the Certificate Manager.",
+      "Type": "String",
+      "MinLength": 0
+    },
+    "NumWorkerNodes": {
+      "Description": "Number of worker nodes to start up",
+      "Type": "Number",
+      "Default": "2",
+      "MinValue": "1",
+      "MaxValue": "24"
+    },
+    "WorkerInstanceType": {
+      "Description": "Amazon instance type, see https://aws.amazon.com/ec2/instance-types/",
+      "Default": "m5.xlarge",
+      "Type": "String",
+      "MinLength": 1,
+      "ConstraintDescription": "The worker instance type must be specified"
+    }
+  },
+  
+  "Metadata": {
+    "AWS::CloudFormation::Interface": {
+      "ParameterGroups": [
+        {
+          "Parameters": ["KeyPairName", "SSLCertificateARN", "NumWorkerNodes", "WorkerInstanceType"]
+        }
+      ],
+      "ParameterLabels": {
+        "KeyPairName" : { "default" : "Name of existing Key Pair" },
+        "SSLCertificateARN": { "default" : "ARN of SSL Certificate"},
+        "NumWorkerNodes" : { "default" : "Number of worker nodes" },
+        "WorkerInstanceType" : { "default" : "Instance type for the worker nodes" }
+      }
+    }
+  },
+  
+  "Conditions": {
+    "HasSSLCertificateARN": {"Fn::Not": [{"Fn::Equals": ["", {"Ref": "SSLCertificateARN"}]}]}
+  },
+  
+  "Mappings" : {
+    "RegionMap" : {
+      "us-east-1"      : { "AmiVm1" : "ami-05976b04271585759", "AmiVm2" : "ami-0dc86d8377634e593", "RegionName" : "US East (N. Virginia)"      }
+    }
+  },
+
+  "Outputs" : {
+    "MatlabProductionServerVM" : {
+      "Description" : "Address of the MATLAB Production Server Cloud Console",
+      "Value": { "Fn::Join": [ "", [ "https://", {"Fn::GetAtt": ["MatlabProductionServerCloudStackServermachine","PublicDnsName"]}, ":9000" ] ] }
+    },
+    "MatlabProductionServerLogsS3Bucket" : {
+      "Description" : "S3 Bucket for MATLAB Production Server logs",
+      "Value": { "Fn::Join": [ "", [ "https://console.aws.amazon.com/s3/buckets/", {"Ref": "MatlabProductionServerCloudStackProdBucket"}, "/?region=", {"Ref": "AWS::Region"}, "&tab=overview" ] ] }
+    },
+    "MatlabProductionServerAutoScalingGroup" : {
+      "Description" : "Auto Scaling Group for managing the number of instances",
+      "Value": { "Fn::Join": [ "", [ "https://console.aws.amazon.com/ec2/autoscaling/home?region=", {"Ref": "AWS::Region"}, "#AutoScalingGroups:view=details;id=", {"Ref": "MatlabProductionServerCloudStackAsg"}, ";filter=", {"Ref": "MatlabProductionServerCloudStackAsg"} ] ] }
+    },
+    "MatlabProductionServerInstance" : {
+      "Description" : "Instance to get the password for the MATLAB Production Server Cloud Console",
+      "Value": { "Fn::Join": [ "", [ "https://console.aws.amazon.com/ec2/home?region=", {"Ref": "AWS::Region"}, "#Instances:search=", {"Ref": "MatlabProductionServerCloudStackServermachine"}, ";sort=tag:Name" ] ] }
+    }
+  },
+
+  "Resources": {
+    "MatlabProductionServerCloudStackProdBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "matlab-production-server-logs-S3-bucket"
+          }
+        ]
+      }
+    },
+    "MatlabProductionServerCloudStackS3AccessRole" : {
+      "DependsOn" : [ "MatlabProductionServerCloudStackProdBucket" ],
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": { "Service": "ec2.amazonaws.com"},
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [ {
+          "PolicyName": "s3-access-policy",
+          "PolicyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [ {
+                "Effect": "Allow",
+                "Action": ["s3:*"],
+                "Resource": [
+                  "Fn::Join": [
+                    "",
+                    [
+                      {"Fn::GetAtt": ["MatlabProductionServerCloudStackProdBucket","Arn"]}, "/*"
+                    ]
+                  ],
+                  {"Fn::GetAtt": ["MatlabProductionServerCloudStackProdBucket","Arn"]}
+                ]
+            } ]
+          }
+        } ]
+      }
+    },
+    "MatlabProductionServerCloudStackS3ReadwriteIamProfile" : {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [ {
+          "Ref": "MatlabProductionServerCloudStackS3AccessRole"
+        } ]
+      }
+    },
+    "MatlabProductionServerCloudStackVpc": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "172.30.0.0/24",
+        "InstanceTenancy": "default",
+        "EnableDnsSupport": "true",
+        "EnableDnsHostnames": "true",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "matlab-production-server-cloud-stack-vpc"
+          }
+        ]
+      }
+    },
+    "MatlabProductionServerCloudStackElbPublic1": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "172.30.0.0/25",
+        "AvailabilityZone": {
+          "Fn::Select": [ "0", { "Fn::GetAZs" : "" } ]
+        },
+        "VpcId": {
+          "Ref": "MatlabProductionServerCloudStackVpc"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "matlab-production-server-cloud-stack-elb-public-1"
+          }
+        ]
+      }
+    },
+    "MatlabProductionServerCloudStackElbPublic2": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "172.30.0.128/25",
+        "AvailabilityZone": {
+          "Fn::Select": [ "1", { "Fn::GetAZs" : "" } ]
+        },
+        "VpcId": {
+          "Ref": "MatlabProductionServerCloudStackVpc"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "matlab-production-server-cloud-stack-elb-public-2"
+          }
+        ]
+      }
+    },
+    "MatlabProductionServerCloudStackGw": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "matlab-production-server-cloud-stack-gw"
+          }
+        ]
+      }
+    },
+    "MatlabProductionServerCloudStackDhcpoptions": {
+      "Type": "AWS::EC2::DHCPOptions",
+      "Properties": {
+        "DomainName": "ec2.internal",
+        "DomainNameServers": [
+          "AmazonProvidedDNS"
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "matlab-production-server-cloud-stack-dhcpoptions"
+          }
+        ]
+      }
+    },
+    "MatlabProductionServerCloudStackRt": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "MatlabProductionServerCloudStackVpc"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "matlab-production-server-cloud-stack-rt"
+          }
+        ]
+      }
+    },
+    "MatlabProductionServerCloudStackElb": {
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties": {
+        "Subnets": [
+          {
+            "Ref": "MatlabProductionServerCloudStackElbPublic2"
+          },
+          {
+            "Ref": "MatlabProductionServerCloudStackElbPublic1"
+          }
+        ],
+        "HealthCheck": {
+          "HealthyThreshold": "10",
+          "Interval": "30",
+          "Target": "HTTP:9910/~files/hello.html",
+          "Timeout": "5",
+          "UnhealthyThreshold": "2"
+        },
+        "ConnectionDrainingPolicy": {
+          "Enabled": "true",
+          "Timeout": "300"
+        },
+        "ConnectionSettings": {
+          "IdleTimeout": "60"
+        },
+        "CrossZone": "true",
+        "SecurityGroups": [
+          {
+            "Ref": "MatlabProductionServerCloudStackElb2Sg"
+          }
+        ],
+        "LBCookieStickinessPolicy" : [
+          {
+            "PolicyName": "LoadBalancerStickinessPolicy1"
+          }
+        ],
+        "Listeners": [
+          { "Fn::If": [
+            "HasSSLCertificateARN",
+            {
+              "InstancePort": "9910",
+              "LoadBalancerPort": "9910",
+              "PolicyNames": [ "LoadBalancerStickinessPolicy1" ],
+              "Protocol": "HTTPS",
+              "InstanceProtocol": "HTTP",
+              "SSLCertificateId": {"Ref": "SSLCertificateARN"}
+            },
+            {
+              "InstancePort": "9910",
+              "LoadBalancerPort": "9910",
+              "PolicyNames": [ "LoadBalancerStickinessPolicy1" ],
+              "Protocol": "HTTP",
+              "InstanceProtocol": "HTTP"
+            }
+          ]}
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "matlab-production-server-cloud-stack-elb"
+          }
+        ]
+      }
+    },
+    "MatlabProductionServerCloudStackAsg": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Properties": {
+        "Cooldown": "300",
+        "DesiredCapacity": {"Ref": "NumWorkerNodes"},
+        "HealthCheckGracePeriod": "300",
+        "HealthCheckType": "EC2",
+        "MaxSize": "24",
+        "MinSize": "1",
+        "VPCZoneIdentifier": [
+          { "Ref": "MatlabProductionServerCloudStackElbPublic1" },
+          { "Ref": "MatlabProductionServerCloudStackElbPublic2" }
+        ],
+        "LaunchConfigurationName": {
+          "Ref": "MatlabProductionServerCloudStackLc"
+        },
+        "LoadBalancerNames": [
+          {
+            "Ref": "MatlabProductionServerCloudStackElb"
+          }
+        ],
+        "TerminationPolicies": [
+          "Default"
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "matlab-production-server-worker-instance",
+            "PropagateAtLaunch": true
+          }
+        ]
+      }
+    },
+    "MatlabProductionServerCloudStackLc": {
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+      "Properties": {
+        "AssociatePublicIpAddress": "true",
+        "ImageId": { "Fn::FindInMap" : [ "RegionMap", { "Ref" : "AWS::Region" }, "AmiVm2" ] },
+        "IamInstanceProfile": {"Ref": "MatlabProductionServerCloudStackS3ReadwriteIamProfile"},
+        "KeyName": { "Ref" : "KeyPairName" },
+        "InstanceType": {"Ref": "WorkerInstanceType"},
+        "SecurityGroups": [
+          {
+            "Ref": "MatlabProductionServerCloudStackElb2Sg"
+          }
+        ],
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/sda1",
+            "Ebs": {
+              "VolumeSize": 120
+            }
+          }
+        ]
+      }
+    },
+    "MatlabProductionServerCloudStackServermachine": {
+      "DependsOn" : [ "MatlabProductionServerCloudStackProdBucket", "MatlabProductionServerCloudStackElb" ],
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "DisableApiTermination": "false",
+        "IamInstanceProfile": {"Ref": "MatlabProductionServerCloudStackS3ReadwriteIamProfile"},
+        "InstanceInitiatedShutdownBehavior": "stop",
+        "ImageId": { "Fn::FindInMap" : [ "RegionMap", { "Ref" : "AWS::Region" }, "AmiVm1" ] },
+        "KeyName": { "Ref" : "KeyPairName" },
+        "InstanceType": "t2.medium",
+        "Monitoring": "false",
+        "NetworkInterfaces": [
+          {
+            "DeleteOnTermination": "true",
+            "Description": "Primary network interface",
+            "DeviceIndex": 0,
+            "SubnetId": {
+              "Ref": "MatlabProductionServerCloudStackElbPublic1"
+            },
+            "PrivateIpAddresses": [
+              {
+                "PrivateIpAddress": "172.30.0.100",
+                "Primary": "true"
+              }
+            ],
+            "GroupSet": [
+              {
+                "Ref": "MatlabProductionServerCloudStackElb1Sg"
+              }
+            ],
+            "AssociatePublicIpAddress": "true"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "matlab-production-server-vm"
+          }
+        ],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "<script>",
+                "cmd /c echo { > c:\\MathWorks\\controllerServer\\dynamicOptions.json\n",
+                "cmd /c echo   \"storageAccountName\": \"", {"Ref": "MatlabProductionServerCloudStackProdBucket"}, "\", >> c:\\MathWorks\\controllerServer\\dynamicOptions.json\n",
+                "cmd /c echo   \"mpsEndPoint\": \"", {"Fn::If": [ "HasSSLCertificateARN", "https://", "http://"]}, {"Fn::GetAtt": ["MatlabProductionServerCloudStackElb","DNSName"]}, ":9910\" >> c:\\MathWorks\\controllerServer\\dynamicOptions.json\n",
+                "cmd /c echo } >> c:\\MathWorks\\controllerServer\\dynamicOptions.json\n",
+                "cmd /c net stop controllerServer5.exe\n",
+                "cmd /c net start controllerServer5.exe\n",
+                "</script>"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    "MatlabProductionServerCloudStackElb1Sg": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "MATLAB Production Server - Server Machine",
+        "VpcId": {
+          "Ref": "MatlabProductionServerCloudStackVpc"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "8000",
+            "ToPort": "10000",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "27000",
+            "ToPort": "27000",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "50115",
+            "ToPort": "50115",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "3389",
+            "ToPort": "3389",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ],
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "-1",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "matlab-production-server-cloud-stack-elb-1-sg"
+          }
+        ]
+      }
+    },
+    "MatlabProductionServerCloudStackElb2Sg": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "MATLAB Production Server - Workers",
+        "VpcId": {
+          "Ref": "MatlabProductionServerCloudStackVpc"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "8000",
+            "ToPort": "10000",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "27000",
+            "ToPort": "27000",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "50115",
+            "ToPort": "50115",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "3389",
+            "ToPort": "3389",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "22",
+            "ToPort": "22",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ],
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "-1",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "matlab-production-server-cloud-stack-elb-2-sg"
+          }
+        ]
+      }
+    },
+    "MatlabProductionServerCloudStackVgw": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Ref": "MatlabProductionServerCloudStackVpc"
+        },
+        "InternetGatewayId": {
+          "Ref": "MatlabProductionServerCloudStackGw"
+        }
+      }
+    },
+    "MatlabProductionServerCloudStackRoute": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "RouteTableId": {
+          "Ref": "MatlabProductionServerCloudStackRt"
+        },
+        "GatewayId": {
+          "Ref": "MatlabProductionServerCloudStackGw"
+        }
+      },
+      "DependsOn": "MatlabProductionServerCloudStackVgw"
+    },
+    "MatlabProductionServerCloudStackDhcpoptionsAssoc": {
+      "Type": "AWS::EC2::VPCDHCPOptionsAssociation",
+      "Properties": {
+        "VpcId": {
+          "Ref": "MatlabProductionServerCloudStackVpc"
+        },
+        "DhcpOptionsId": {
+          "Ref": "MatlabProductionServerCloudStackDhcpoptions"
+        }
+      }
+    },
+    "MatlabProductionServerCloudStackElbPublic1RtAssoc": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "MatlabProductionServerCloudStackElbPublic1"
+        },
+        "RouteTableId": {
+          "Ref": "MatlabProductionServerCloudStackRt"
+        }
+      }
+    },
+    "MatlabProductionServerCloudStackElbPublic2RtAssoc": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "MatlabProductionServerCloudStackElbPublic2"
+        },
+        "RouteTableId": {
+          "Ref": "MatlabProductionServerCloudStackRt"
+        }
+      }
+    }
+  }
+}
