@@ -161,51 +161,14 @@ resource group.
 
 ### Resources
 
-<table dir="auto">
-<thead>
-<tr>
-<th>Resource Type</th>
-<th>Number of Resources</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>AWS EC2 Instance</td>
-<td>1</td>
-<td>Virtual machine(VM) that hosts the MATLAB Production Server Cloud Console and license manager. Use the cloud console to: <ul>
-<li> Upload your license file and start using the server</li>
-<li>Get HTTP/HTTPS endpoint to make requests</li>
-<li> Upload applications (.ctf files) to the server</li>
-<li> Manage server configurations</li>
-<li> Manage the HTTPS certificate</li>
-</ul>
-<p>For more information, see <a href="/cloud/aws/ref/mps/blob/master/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide">MATLAB Production Server Cloud Console User's Guide</a>.</p>
-</td>
-</tr>
-<tr>
-<td>Auto Scaling Group</td>
-<td>1</td>
-<td>Manages the number of identical VMs to be deployed. Each VM runs an instance of MATLAB Production Server which in turn runs multiple MATLAB workers.</td>
-</tr>
-<tr>
-<td>Load Balancer</td>
-<td>1</td>
-<td>Provides routing and load balancing service to MATLAB Production Server instances. The MATLAB Production Server Cloud Console retrieves the HTTP/HTTPS endpoint for making requests to the server from the load balancer resource.<p><strong>NOTE</strong>: Provides HTTPS endpoint to the server for making requests.</p>
-</td>
-</tr>
-<tr>
-<td>S3 Bucket</td>
-<td>NA</td>
-<td>S3 storage bucket created during the creation of the stack where logs for the reference architecture are stored.</td>
-</tr>
-<tr>
-<td>Virtual Private Cluster (VPC)</td>
-<td>1</td>
-<td>Enables resources to communicate with each other.</td>
-</tr>
-</tbody>
-</table>
+| Resource Type                                                              | Number of Resources | Description                                                                                                                                                                                                                                                                                                                        |
+|----------------------------------------------------------------------------|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| AWS EC2 Instance                                                           | 1                   | Virtual machine(VM) that hosts the MATLAB Production Server Cloud Console and license manager. Use the cloud console to: <ul><li> Upload your license file and start using the server</li><li>Get HTTP/HTTPS endpoint to make requests</li><li> Upload applications (.ctf files) to the server</li><li> Manage server configurations</li><li> Manage the HTTPS certificate</li></ul><p>For more information, see [MATLAB Production Server Cloud Console User's Guide](/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide).   |
+| Auto Scaling Group                                                         | 1                   | Manages the number of identical VMs to be deployed. Each VM runs an instance of MATLAB Production Server which in turn runs multiple MATLAB workers.                                                                                                                                                                               |
+| Load Balancer                                                              | 1                   | Provides routing and load balancing service to MATLAB Production Server instances. The MATLAB Production Server Cloud Console retrieves the HTTP/HTTPS endpoint for making requests to the server from the load balancer resource.<p>**NOTE**: Provides HTTPS endpoint to the server for making requests.</p>                                                                                           |
+| S3 Bucket                                                                  | NA                  | S3 storage bucket created during the creation of the stack where logs for the reference architecture are stored.                                                                                                                                                                                                  |
+| Virtual Private Cluster (VPC)                                              | 1                   | Enables resources to communicate with each other.                                           |
+
 
 # Enhancement Request
 Provide suggestions for additional features or capabilities using the following link: https://www.mathworks.com/cloud/enhancement-request.html
