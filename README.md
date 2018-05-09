@@ -169,9 +169,10 @@ resource group.
 | S3 Bucket                                                                  | NA                  | S3 storage bucket created during the creation of the stack where logs for the reference architecture are stored.                                                                                                                                                                                                  |
 | Virtual Private Cluster (VPC)                                              | 1                   | Enables resources to communicate with each other.                                           |
 
-
+<!--
 # Enhancement Request
 Provide suggestions for additional features or capabilities using the following link: https://www.mathworks.com/cloud/enhancement-request.html
+-->
 
 # Support
 Email: `cloud-support@mathworks.com`
