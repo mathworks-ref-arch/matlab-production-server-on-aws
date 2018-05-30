@@ -5,7 +5,6 @@
 Before starting, you need the following:
 
 -   A MATLAB® Production Server™ license. For more information, see [Configure MATLAB Production Server Licensing on the Cloud](https://www.mathworks.com/support/cloud/configure-matlab-production-server-licensing-on-the-cloud.html). In order to configure the license in the cloud, you will need the MAC address of the license server on the cloud. You can get the license server MAC address only after deploying the solution to the cloud. For more information, see [Get License Server MAC Address](/doc/cloudConsoleDoc.md#get-license-server-mac-address).
--   MATLAB® Production Server™ software.
 -   An Amazon Web Services™ (AWS) account.
 -   A Key Pair for your AWS account in the US East (N. Virginia) region. For more information, see [Amazon EC2 Key Pairs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html).
 
