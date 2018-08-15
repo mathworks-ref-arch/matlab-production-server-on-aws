@@ -35,17 +35,9 @@ Click the **Launch Stack** button to deploy resources on AWS. This will open the
 
 | Windows Server 2016 VM                                                                                                                                                                                                                                                                                                                                                      | Ubuntu 16.04 VM                                                                                                                                                                                                                                                                                                                                                               |
 |-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://s3.amazonaws.com/matlab-production-server-templates/MatlabProductionServer_Windows_R2018a.template" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a><p>  MATLAB Release: 2018a </p>| <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://s3.amazonaws.com/matlab-production-server-templates/MatlabProductionServer_Linux_R2018a.template" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a><p>  MATLAB Release: R2018a </p>|
+| <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://s3.amazonaws.com/cf-templates-yly6f0xc9eiy-us-east-1/MatlabProductionServer_Windows_R2018a.template" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a><p>  MATLAB Release: 2018a </p>| <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://s3.amazonaws.com/cf-templates-yly6f0xc9eiy-us-east-1/MatlabProductionServer_Linux_R2018a.template" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a><p>  MATLAB Release: R2018a </p>|
 
-<!--
-<a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://s3.amazonaws.com/matlab-production-server-templates/MatlabProductionServer_Windows_R2018a.template" target="_blank">
-    <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/>
-</a>
 
-> VM Platform: Windows Server 2016
-
-> MATLAB Release: R2018a
--->
 
 **Note**: Creating a stack on AWS can take at least 20 minutes.
 
@@ -59,6 +51,7 @@ Click the **Launch Stack** button to deploy resources on AWS. This will open the
     | **ARN of SSL Certificate**             | Provide the Amazon Resource Name (ARN) of an existing certificate in the AWS Certificate Manager to enable secure HTTPS communication to the HTTPS server endpoint. This field is optional and may be left blank to use HTTP communication instead. For more information, see [Create Self-signed Certificate](/README.md#create-self-signed-certificate) and [Upload Self-signed Certificate to AWS Certificate Manager](/README.md#upload-self-signed-certificate-to-aws-certificate-manager).<p><em>*Example*</em>: 123456789012</p>                                                                                        |
     | **Number of worker nodes**             | Choose the number of AWS instances to start for the server. <p><em>*Example*</em>: 6</p><p>If you have a standard 24 worker MATLAB Production Server license and select `m5.xlarge` (4 cores) as the **Instance type for the worker nodes**, you will need 6 worker nodes to fully utilize the workers in your license.</p><p>You can always under provision the number instances. In which case you may end up using fewer workers than you are licensed for.</p>                                                                                                                                                                                                                                                                        |
     | **Instance type for the worker nodes** | Choose the AWS instance type to use for the server instances. All AWS instance types are supported. For more information, see [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/). <p><em>*Example*</em>: m5.xlarge</p> |
+    | **Allow connections from** | This is the IP address range that will be allowed to connect to the cloud console that manages the server. The format for this field is IP Address/Mask. <p><em>Example</em>: </p>10.0.0.1/32 <ul><li>This is the public IP address which can be found by searching for "what is my ip address" on the web. The mask determines the number of IP addresses to include.</li><li>A mask of 32 is a single IP address.</li><li>Use a [CIDR calculator](https://www.ipaddressguide.com/cidr) if you need a range of more than one IP addresses.</li><li>You may need to contact your IT administrator to determine which address is appropriate.</li></ul></p> |
 
     >**Note**: Make sure you select US East (N.Virginia) as your region from the nagivation panel on top. Currently, US East is the only supported region.
 
@@ -68,7 +61,7 @@ Click the **Launch Stack** button to deploy resources on AWS. This will open the
 
 ## Step 3. Get Password to the Cloud Console
 1. After clicking **Create** you will be taken to the *Stack Detail* page for your stack. Wait for the Status to reach **CREATE\_COMPLETE**. This may take up to 10 minutes.
-1. In the Stack Detail for your stack, expand the **Outputs** section. 
+1. In the Stack Detail for your stack, expand the **Outputs** section.
 1. Look for the key named `MatlabProductionServerInstance` and click the corresponding URL listed under value. This will take you to the server instance (`matlab-production-server-vm`) page. 
 1. Click the **Connect** button at the top.
 1. In the *Connect To Your Instance* dialog box, choose **Get Password**.
@@ -168,6 +161,25 @@ resource group.
 | S3 Bucket                                                                  | NA                  | S3 storage bucket created during the creation of the stack where logs for the reference architecture are stored.                                                                                                                                                                                                  |
 | Virtual Private Cluster (VPC)                                              | 1                   | Enables resources to communicate with each other.                                           |
 
+# FAQ
+## What versions of MATLAB Runtime are supported?
+
+* R2015b
+* R2016a
+* R2016b
+* R2017a
+* R2017b
+* R2018a
+
+## Why do requests to the server fail with errors such as “untrusted certificate” or “security exception”?  
+
+These errors result from either CORS not being enabled on the server or due to the fact that the server endpoint uses a self-signed 
+certificate. 
+
+If you are making an AJAX request to the server, make sure that CORS is enabled in the server configuration. You can enable CORS by editing the property `--cors-allowed-origins` in the config file. For more information, see [Edit the Server Configuration](/doc/cloudConsoleDoc.md#edit-the-server-configuration).
+
+Also, some HTTP libraries and Javascript AJAX calls will reject a request originating from a server that uses a self-signed certificate. You may need to manually override the default security behavior of the client application. Or you can add a new 
+HTTP/HTTPS endpoint to the application gateway. For more information, see [Create a Listener](/doc/cloudConsoleDoc.md#create-a-listener). 
 
 # Enhancement Request
 Provide suggestions for additional features or capabilities using the following link: https://www.mathworks.com/cloud/enhancement-request.html

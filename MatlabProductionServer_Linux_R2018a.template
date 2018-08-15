@@ -27,6 +27,14 @@
       "Type": "String",
       "MinLength": 1,
       "ConstraintDescription": "The worker instance type must be specified"
+    },
+    "ClientIPAddress": {
+      "Description": "IP address range allowed for external connections",
+      "Type": "String",
+      "MinLength": "9",
+      "MaxLength": "18",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "Must be a valid IP CIDR range of the form x.x.x.x/x"
     }
   },
   
@@ -34,14 +42,15 @@
     "AWS::CloudFormation::Interface": {
       "ParameterGroups": [
         {
-          "Parameters": ["KeyPairName", "SSLCertificateARN", "NumWorkerNodes", "WorkerInstanceType"]
+          "Parameters": ["KeyPairName", "SSLCertificateARN", "NumWorkerNodes", "WorkerInstanceType", "ClientIPAddress"]
         }
       ],
       "ParameterLabels": {
         "KeyPairName" : { "default" : "Name of existing Key Pair" },
-        "SSLCertificateARN": { "default" : "ARN of SSL Certificate"},
+        "SSLCertificateARN": { "default" : "ARN of SSL Certificate" },
         "NumWorkerNodes" : { "default" : "Number of worker nodes" },
-        "WorkerInstanceType" : { "default" : "Instance type for the worker nodes" }
+        "WorkerInstanceType" : { "default" : "Instance type for the worker nodes" },
+        "ClientIPAddress" : { "default": "Allow connections from" }
       }
     }
   },
@@ -52,7 +61,7 @@
   
   "Mappings" : {
     "RegionMap" : {
-      "us-east-1"      : { "AmiVm1" : "ami-05976b04271585759", "AmiVm2" : "ami-0dc86d8377634e593", "RegionName" : "US East (N. Virginia)"      }
+      "us-east-1"      : { "AmiVm1" : "ami-0a817e4564447fe4f", "AmiVm2" : "ami-0e1c330a4a8230997", "RegionName" : "US East (N. Virginia)"      }
     }
   },
 
@@ -413,25 +422,19 @@
             "IpProtocol": "tcp",
             "FromPort": "8000",
             "ToPort": "10000",
-            "CidrIp": "0.0.0.0/0"
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "27000",
-            "ToPort": "27000",
-            "CidrIp": "0.0.0.0/0"
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "50115",
-            "ToPort": "50115",
-            "CidrIp": "0.0.0.0/0"
+            "CidrIp": { "Ref": "ClientIPAddress" }
           },
           {
             "IpProtocol": "tcp",
             "FromPort": "3389",
             "ToPort": "3389",
-            "CidrIp": "0.0.0.0/0"
+            "CidrIp": { "Ref": "ClientIPAddress" }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "0",
+            "ToPort": "65535",
+            "CidrIp": {"Fn::GetAtt": ["MatlabProductionServerCloudStackVpc","CidrBlock"]}
           }
         ],
         "SecurityGroupEgress": [
@@ -460,31 +463,25 @@
             "IpProtocol": "tcp",
             "FromPort": "8000",
             "ToPort": "10000",
-            "CidrIp": "0.0.0.0/0"
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "27000",
-            "ToPort": "27000",
-            "CidrIp": "0.0.0.0/0"
-          },
-          {
-            "IpProtocol": "tcp",
-            "FromPort": "50115",
-            "ToPort": "50115",
-            "CidrIp": "0.0.0.0/0"
+            "CidrIp": { "Ref": "ClientIPAddress" }
           },
           {
             "IpProtocol": "tcp",
             "FromPort": "3389",
             "ToPort": "3389",
-            "CidrIp": "0.0.0.0/0"
+            "CidrIp": { "Ref": "ClientIPAddress" }
           },
           {
             "IpProtocol": "tcp",
             "FromPort": "22",
             "ToPort": "22",
-            "CidrIp": "0.0.0.0/0"
+            "CidrIp": { "Ref": "ClientIPAddress" }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "0",
+            "ToPort": "65535",
+            "CidrIp": {"Fn::GetAtt": ["MatlabProductionServerCloudStackVpc","CidrBlock"]}
           }
         ],
         "SecurityGroupEgress": [
