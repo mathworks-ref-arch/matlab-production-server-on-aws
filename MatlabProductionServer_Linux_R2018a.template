@@ -61,7 +61,7 @@
   
   "Mappings" : {
     "RegionMap" : {
-      "us-east-1"      : { "AmiVm1" : "ami-0a817e4564447fe4f", "AmiVm2" : "ami-0e1c330a4a8230997", "RegionName" : "US East (N. Virginia)"      }
+      "us-east-1"      : { "AmiVm1" : "ami-0a817e4564447fe4f", "AmiVm2" : "ami-0e43359e6cb444745", "RegionName" : "US East (N. Virginia)"      }
     }
   },
 
