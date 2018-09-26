@@ -33,13 +33,12 @@ For information about the architecture of this solution, see [Architecture and R
 ## Step 1. Launch the Template
 Click the **Launch Stack** button to deploy resources on AWS. This will open the AWS Management Console in your web browser.
 
-| Windows Server 2016 VM                                                                                                                                                                                                                                                                                                                                                      | Ubuntu 16.04 VM                                                                                                                                                                                                                                                                                                                                                               |
-|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://s3.amazonaws.com/matlab-production-server-templates/MatlabProductionServer_Windows_R2018a.template" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a><p>  MATLAB Release: 2018a </p>| <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://s3.amazonaws.com/matlab-production-server-templates/MatlabProductionServer_Linux_R2018a.template" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a><p>  MATLAB Release: R2018a </p>|
+| Release | Windows Server 2016 VM | Ubuntu 16.04 VM |
+|---------------|------------------------|-----------------|
+| MATLAB R2018b | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://s3.amazonaws.com/matlab-production-server-templates/MatlabProductionServer_Windows_R2018b.template" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a> | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://s3.amazonaws.com/matlab-production-server-templates/MatlabProductionServer_Linux_R2018b.template" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a> |
 
-
-
-**Note**: Creating a stack on AWS can take at least 20 minutes.
+For other releases, see [How do I launch a template that uses a previous MATLAB release?](#how-do-i-launch-a-template-that-uses-a-previous-matlab-release)
+<p><strong>Note:</strong> Creating a stack on AWS can take at least 20 minutes.</p>
 
 ## Step 2. Configure the Stack
 1. Provide values for parameters in the **Create Stack** page:
@@ -162,14 +161,17 @@ resource group.
 | Virtual Private Cluster (VPC)                                              | 1                   | Enables resources to communicate with each other.                                           |
 
 # FAQ
+## How do I launch a template that uses a previous MATLAB release?
+| Release | Windows Server 2016 VM | Ubuntu 16.04 VM |
+|---------------|------------------------|-----------------|
+| MATLAB R2018a | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://s3.amazonaws.com/matlab-production-server-templates/MatlabProductionServer_Windows_R2018a.template" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a> | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://s3.amazonaws.com/matlab-production-server-templates/MatlabProductionServer_Linux_R2018a.template" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a>|
+
 ## What versions of MATLAB Runtime are supported?
 
-* R2015b
-* R2016a
-* R2016b
-* R2017a
-* R2017b
-* R2018a
+| Release | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime |
+|---------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|
+| MATLAB R2018a | R2015b | R2016a | R2016b | R2017a | R2017b | R2018a |  |
+| MATLAB R2018b |  | R2016a | R2016b | R2017a | R2017b | R2018a | R2018b |
 
 ## Why do requests to the server fail with errors such as “untrusted certificate” or “security exception”?  
 
