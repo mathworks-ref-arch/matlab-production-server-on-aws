@@ -12,7 +12,7 @@
     "SSLCertificateARN": {
       "Description": "(Optional) Enter the ARN to be used for HTTPS connections to the MPS Endpoint. If provided, the ARN must match an existing certificate in the Certificate Manager.",
       "Type": "String",
-      "MinLength": 0
+      "Default": ""
     },
     "NumWorkerNodes": {
       "Description": "Number of worker nodes to start up",
