@@ -61,8 +61,7 @@
   
   "Mappings" : {
     "RegionMap" : {
-      "us-east-1"      : { "AmiVm1" : "ami-0ea1f4e0ad6ab472a", "AmiVm2" : "ami-014194fa3a2da05ea", "RegionName" : "US East (N. Virginia)"      },
-      "eu-west-3"      : { "AmiVm1" : "ami-086b70ff005793e7f", "AmiVm2" : "ami-04419afa3adb35690", "RegionName" : "EU West (Paris)"            }
+      "us-east-1"      : { "AmiVm1" : "ami-0ea1f4e0ad6ab472a", "AmiVm2" : "ami-014194fa3a2da05ea", "RegionName" : "US East (N. Virginia)"      }
     }
   },
 
