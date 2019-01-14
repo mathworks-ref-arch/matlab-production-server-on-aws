@@ -52,7 +52,7 @@ For other releases, see [How do I launch a template that uses a previous MATLAB 
     | **Instance type for the worker nodes** | Choose the AWS instance type to use for the server instances. All AWS instance types are supported. For more information, see [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/). <p><em>*Example*</em>: m5.xlarge</p> |
     | **Allow connections from** | This is the IP address range that will be allowed to connect to the cloud console that manages the server. The format for this field is IP Address/Mask. <p><em>Example</em>: </p>10.0.0.1/32 <ul><li>This is the public IP address which can be found by searching for "what is my ip address" on the web. The mask determines the number of IP addresses to include.</li><li>A mask of 32 is a single IP address.</li><li>Use a [CIDR calculator](https://www.ipaddressguide.com/cidr) if you need a range of more than one IP addresses.</li><li>You may need to contact your IT administrator to determine which address is appropriate.</li></ul></p> |
 
-    >**Note**: Make sure you select US East (N.Virginia) as your region from the nagivation panel on top. Currently, US East is the only supported region.
+    >**Note**: Make sure you select US East (N.Virginia) as your region from the navigation panel on top. Currently, US East is the only supported region.
 
 2. Tick the box to accept that the template uses IAM roles. These roles allow server instances to write log files to the S3 bucket. For more information about IAM, see [IAM FAQ](https://aws.amazon.com/iam/faqs). 
   
