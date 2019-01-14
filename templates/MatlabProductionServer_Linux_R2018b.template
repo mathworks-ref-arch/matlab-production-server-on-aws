@@ -61,14 +61,14 @@
   
   "Mappings" : {
     "RegionMap" : {
-      "us-east-1"      : { "AmiVm1" : "ami-0ea1f4e0ad6ab472a", "AmiVm2" : "ami-014194fa3a2da05ea", "RegionName" : "US East (N. Virginia)"      }
+      "us-east-1"      : { "AmiVm1" : "ami-0745ada67d5418b0e", "AmiVm2" : "ami-084b7c773d18ff668", "RegionName" : "US East (N. Virginia)"      }
     }
   },
 
   "Outputs" : {
     "MatlabProductionServerVM" : {
       "Description" : "Address of the MATLAB Production Server Cloud Console",
-      "Value": { "Fn::Join": [ "", [ "https://", {"Fn::GetAtt": ["MatlabProductionServerCloudStackServermachine","PublicDnsName"]}, ":9000" ] ] }
+      "Value": { "Fn::Join": [ "", [ "https://", {"Fn::GetAtt": ["MatlabProductionServerCloudStackServermachine","PublicDnsName"]} ] ] }
     },
     "MatlabProductionServerLogsS3Bucket" : {
       "Description" : "S3 Bucket for MATLAB Production Server logs",
@@ -273,7 +273,7 @@
             "HasSSLCertificateARN",
             {
               "InstancePort": "9910",
-              "LoadBalancerPort": "9910",
+              "LoadBalancerPort": "443",
               "PolicyNames": [ "LoadBalancerStickinessPolicy1" ],
               "Protocol": "HTTPS",
               "InstanceProtocol": "HTTP",
@@ -281,7 +281,7 @@
             },
             {
               "InstancePort": "9910",
-              "LoadBalancerPort": "9910",
+              "LoadBalancerPort": "80",
               "PolicyNames": [ "LoadBalancerStickinessPolicy1" ],
               "Protocol": "HTTP",
               "InstanceProtocol": "HTTP"
@@ -360,7 +360,6 @@
                 "echo { > /MathWorks/clientCodeRefLinux/dynamicOptions.json\n",
                 "echo \"  \" \\\"storageAccountName\\\": \\\"", {"Ref": "MatlabProductionServerCloudStackProdBucket"}, "\\\" >> /MathWorks/clientCodeRefLinux/dynamicOptions.json\n",
                 "echo } >> /MathWorks/clientCodeRefLinux/dynamicOptions.json\n",
-                "cp /MathWorks/clientCodeRefLinux/dynamicOptions.json /MathWorks/clientCodeRefLinux/dynamicOptions.json.helder\n",
                 "systemctl start node8000.service\n"
               ]
             ]
@@ -413,11 +412,12 @@
               "",
               [
                 "<script>",
+                "cmd /c net stop controllerServer5.exe\n",
                 "cmd /c echo { > c:\\MathWorks\\controllerServer\\dynamicOptions.json\n",
                 "cmd /c echo   \"storageAccountName\": \"", {"Ref": "MatlabProductionServerCloudStackProdBucket"}, "\", >> c:\\MathWorks\\controllerServer\\dynamicOptions.json\n",
-                "cmd /c echo   \"mpsEndPoint\": \"", {"Fn::If": [ "HasSSLCertificateARN", "https://", "http://"]}, {"Fn::GetAtt": ["MatlabProductionServerCloudStackElb","DNSName"]}, ":9910\" >> c:\\MathWorks\\controllerServer\\dynamicOptions.json\n",
+                "cmd /c echo   \"mpsEndPoint\": \"", {"Fn::If": [ "HasSSLCertificateARN", "https://", "http://"]}, {"Fn::GetAtt": ["MatlabProductionServerCloudStackElb","DNSName"]}, "\", >> c:\\MathWorks\\controllerServer\\dynamicOptions.json\n",
+                "cmd /c echo   \"CIDRRange\": \"172.30.0.0/24\" >> c:\\MathWorks\\controllerServer\\dynamicOptions.json\n",
                 "cmd /c echo } >> c:\\MathWorks\\controllerServer\\dynamicOptions.json\n",
-                "cmd /c net stop controllerServer5.exe\n",
                 "cmd /c net start controllerServer5.exe\n",
                 "</script>"
               ]
@@ -434,6 +434,18 @@
           "Ref": "MatlabProductionServerCloudStackVpc"
         },
         "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "80",
+            "ToPort": "80",
+            "CidrIp": { "Ref": "ClientIPAddress" }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "443",
+            "ToPort": "443",
+            "CidrIp": { "Ref": "ClientIPAddress" }
+          },
           {
             "IpProtocol": "tcp",
             "FromPort": "8000",
@@ -475,6 +487,18 @@
           "Ref": "MatlabProductionServerCloudStackVpc"
         },
         "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "80",
+            "ToPort": "80",
+            "CidrIp": { "Ref": "ClientIPAddress" }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": "443",
+            "ToPort": "443",
+            "CidrIp": { "Ref": "ClientIPAddress" }
+          },
           {
             "IpProtocol": "tcp",
             "FromPort": "8000",
