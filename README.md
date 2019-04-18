@@ -87,7 +87,7 @@ The username to the cloud console is **Administrator**. For the password, paste 
 **Accept Terms and Conditions**: Access to and use of the MATLAB Production Server Cloud Console is governed by license terms in the file `C:\MathWorks\Cloud Console License.txt` (Linux: `/MathWorks/Cloud Console License.txt`) available on the `servermachine` in the resource group for this solution. 
 
 
->**Note**: The cloud console uses a self-signed certificate which can be changed. For information on changing the self-signed certificates, see [Change Self-signed Certificates](/releases/R2019a/cloudConsoleDoc.md#change-self-signed-certificates).
+>**Note**: The cloud console uses a self-signed certificate which can be changed. For information on changing the self-signed certificates, see [Change Self-signed Certificates](/releases/R2019a/doc/cloudConsoleDoc.md#change-self-signed-certificates).
 
 ## Step 6. Upload the License File
 > **Note**: You will need a fixed MAC address to get a license file from the MathWorks License Center. For more information, see [Configure MATLAB Production Server Licensing on the Cloud](https://www.mathworks.com/support/cloud/configure-matlab-production-server-licensing-on-the-cloud.html).
@@ -125,7 +125,7 @@ When you run MATLAB Production Server on the cloud you get two HTTP/HTTPS endpoi
 
 1. A HTTPS endpoint to the cloud console. This endpoint is used to connect to the cloud console. The cloud console comes with a self-signed certificate.  
 
-For information on changing the self-signed certificates, see [Change Self-signed Certificates](/releases/R2019a/cloudConsoleDoc.md#change-self-signed-certificates). 
+For information on changing the self-signed certificates, see [Change Self-signed Certificates](/releases/R2019a/doc/cloudConsoleDoc.md#change-self-signed-certificates). 
 
 ### Create Self-signed Certificate
 For information on creating a self-signed certificate, see [Create and Sign an X509 Certificate](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/configuring-https-ssl.html).
@@ -211,10 +211,10 @@ For more information, see [previous releases](/releases/R2018b%20and%20older).
 These errors result from either CORS not being enabled on the server or due to the fact that the server endpoint uses a self-signed 
 certificate. 
 
-If you are making an AJAX request to the server, make sure that CORS is enabled in the server configuration. You can enable CORS by editing the property `--cors-allowed-origins` in the config file. For more information, see [Edit the Server Configuration](/releases/R2019a/cloudConsoleDoc.md#edit-the-server-configuration).
+If you are making an AJAX request to the server, make sure that CORS is enabled in the server configuration. You can enable CORS by editing the property `--cors-allowed-origins` in the config file. For more information, see [Edit the Server Configuration](/releases/R2019a/doc/cloudConsoleDoc.md#edit-the-server-configuration).
 
 Also, some HTTP libraries and Javascript AJAX calls will reject a request originating from a server that uses a self-signed certificate. You may need to manually override the default security behavior of the client application. Or you can add a new 
-HTTP/HTTPS endpoint to the application gateway. For more information, see [Create a Listener](/releases/R2019a/cloudConsoleDoc.md#create-a-listener). 
+HTTP/HTTPS endpoint to the application gateway. For more information, see [Create a Listener](/releases/R2019a/doc/cloudConsoleDoc.md#create-a-listener). 
 
 # Enhancement Request
 Provide suggestions for additional features or capabilities using the following link: https://www.mathworks.com/cloud/enhancement-request.html
