@@ -1,0 +1,245 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "MATLAB Production Server R2020a Existing VPC"
+Parameters:
+  KeyPairName:
+    Type: "AWS::EC2::KeyPair::KeyName"
+    Description: "Enter the key pair name to use for all EC2 instances. If you do not have a key pair, create one in the EC2 console >> Network & Security >> Key Pairs."
+    ConstraintDescription: "Must be the name of an existing EC2 Key Pair."
+  ClientIPAddress:
+    Description: "Allowed IP addresses that can connect to the MATLAB Production Server VM and Load Balancer. Specify the range in CIDR notation in the format IP Address/Mask. Example: 10.0.0.1/24."
+    Type: String
+    MinLength: 9
+    MaxLength: 18
+    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+    ConstraintDescription: "Must be a valid IP in CIDR notation of the form x.x.x.x/x"
+  AllowPublicIP: 
+    Description: "Specify whether the deployed solution should use public IP addresses."
+    Type: String
+    AllowedValues:
+      - 'Yes'
+      - 'No'
+    Default: 'Yes'
+  NumWorkerNodes:
+    Description: "Each server instance runs on a VM. Specify the number of VMs to run server instances."
+    Type: Number
+    Default: 2
+    MinValue: 1
+    MaxValue: 24
+  WorkerInstanceType:
+    Description: "Specify the EC2 instance type to use for a server VM. Each server VM runs multiple MATLAB workers. The default number of workers is 4. Choosing a VM size where the number of cores on a VM matches the number of workers is recommended. For more information on Amazon EC2 instance types and sizes, see https://aws.amazon.com/ec2/instance-types/"
+    Default: "m5.xlarge"
+    Type: String
+    MinLength: 1
+    ConstraintDescription: "Specify worker instance type."
+  WorkerSystem:
+    Description: "Choose between Windows (Windows Server) and Linux (Ubuntu)."
+    Type: String
+    AllowedValues:
+      - Ubuntu
+      - Windows
+  SSLCertificateARN:
+    Description: "(Optional) Enter the ARN to use for HTTPS connections to the server endpoint. The ARN you provide must match an existing certificate in the AWS Certificate Manager."
+    Type: String
+    Default: ""
+  EnablePersistence:
+    Description: "Specify whether you want to deploy a Redis ElastiCache that lets you use the persistence functionality on the server."
+    Type: String
+    AllowedValues:
+      - 'Yes'
+      - 'No'
+    Default: 'Yes'
+  DeployLicenseServer:
+    Description: "Specify whether you want to deploy the Network License Manager for MATLAB"
+    Type: String
+    AllowedValues:
+      - 'Yes'
+      - 'No'
+    Default: 'Yes'
+  Password:
+    Description: "Use this password to log in to the Network License Manager for MATLAB dashboard. Leave blank if you are not deploying the license server."
+    Type: String
+    NoEcho: true
+    ConstraintDescription: ""
+    Default: ""
+  ConfirmPassword:
+    Description: "Reenter the password to log in to the Network License Manager for MATLAB dashboard. Leave blank if you are not deploying the license server."
+    Type: String
+    NoEcho: true
+    ConstraintDescription: ""
+    Default: ""
+  ExistingVPC:
+    Description: "ID of your existing VPC where you want to deploy this solution."
+    Type: "AWS::EC2::VPC::Id"
+    ConstraintDescription: "Must be the ID of an existing VPC."
+    Default: ""
+  ExistingVPCAddress:
+    Description: "Get the IP address range from the existing VPC you selected above."
+    Type: String
+    MinLength: 9
+    MaxLength: 18
+    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+    ConstraintDescription: "Must be a valid IP CIDR range of the form x.x.x.x/x"
+  ExistingSubnet1:
+    Description: "ID of an existing subnet that will host the cloud console and other resources."
+    Type: "AWS::EC2::Subnet::Id"
+    ConstraintDescription: "Must be the ID of an existing Subnet."
+    Default: ""
+  ExistingSubnet2:
+    Description: "ID of an existing subnet that will host the load balancer."
+    Type: "AWS::EC2::Subnet::Id"
+    ConstraintDescription: "Must be the ID of an existing Subnet."
+    Default: ""
+Metadata:
+  "AWS::CloudFormation::Interface":
+    ParameterGroups:
+      - Label:
+          default: Remote Access
+        Parameters:
+          - KeyPairName
+          - ClientIPAddress
+          - AllowPublicIP
+      - Label:
+          default: Server
+        Parameters:
+          - NumWorkerNodes
+          - WorkerInstanceType
+          - WorkerSystem
+          - SSLCertificateARN
+          - EnablePersistence
+      - Label:
+          default: Network License Manager for MATLAB
+        Parameters:
+          - DeployLicenseServer
+          - Password
+          - ConfirmPassword
+      - Label:
+          default: Existing VPC
+        Parameters:
+          - ExistingVPC
+          - ExistingVPCAddress
+          - ExistingSubnet1
+          - ExistingSubnet2
+    ParameterLabels:
+      KeyPairName:
+        default: "Name of Existing Key Pair"
+      SSLCertificateARN:
+        default: "ARN of SSL Certificate"
+      NumWorkerNodes:
+        default: "Number of Server VMs"
+      WorkerInstanceType:
+        default: "Server VM Type"
+      WorkerSystem:
+        default: "Server VM Operating System"
+      ClientIPAddress:
+        default: "Allow Connections from IP Address"
+      AllowPublicIP:
+        default: "Make Solution Available over Internet"
+      EnablePersistence:
+        default: "Create Redis ElastiCache"
+      DeployLicenseServer:
+        default: "Deploy License Server"
+      Password:
+        default: Password
+      ConfirmPassword:
+        default: Confirm Password
+      ExistingVPC:
+        default: "Existing VPC ID"
+      ExistingVPCAddress:
+        default: "IP Address Range of Existing VPC"
+      ExistingSubnet1:
+        default: "Subnet 1 ID"
+      ExistingSubnet2:
+        default: "Subnet 2 ID"
+
+Rules:
+  checkLicenseServerPassword:
+    RuleCondition:  !Equals
+      - !Ref DeployLicenseServer
+      - 'Yes'
+    Assertions:
+      - Assert: !And
+          - !Not [!Equals ['', !Ref Password]]
+          - !Not [!Equals ['', !Ref ConfirmPassword]]
+        AssertDescription: 'Password is required when require to deploy license server'
+      - Assert: !Equals [!Ref Password, !Ref ConfirmPassword]
+        AssertDescription: "Passwords do not match"
+  checkSubnetInVPC:
+    Assertions:
+      - Assert: !EachMemberEquals
+          - !ValueOfAll
+            - AWS::EC2::Subnet::Id
+            - VpcId
+          - !Ref ExistingVPC
+        AssertDescription: Subnet must exist in the VPC you have selected
+
+Conditions:
+  DoDeployLicenseServer: !Equals 
+    - 'Yes'
+    - !Ref DeployLicenseServer
+  DoPublicIP: !Equals ['Yes', !Ref AllowPublicIP]
+Outputs: 
+  MatlabProductionServerVM: 
+    Description: "Address of the MATLAB Production Server Cloud Console"
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MatlabProductionServerVM
+  MATLABProductionServerApplicationsBucket: 
+    Description: "S3 Bucket for MATLAB Production Server applications (CTF files)"
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerApplicationsBucket
+  MATLABProductionServerCloudConsoleWorkerLogGroup:
+    Description: "CloudWatch log group for cloud console and worker logs"
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerCloudConsoleWorkerLogGroup
+  MATLABProductionServerLogGroup:
+    Description: "CloudWatch log group for server logs"
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerLogGroup
+  MatlabProductionServerAutoScalingGroup: 
+    Description: "Auto Scaling Group for managing the number of instances"
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MatlabProductionServerAutoScalingGroup
+  MatlabProductionServerInstance: 
+    Description: "Instance to get the password for the MATLAB Production Server Cloud Console"
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MatlabProductionServerInstance
+  MatlabProductionServerLicenseServer:
+    Description: "Address of the network license manager for MATLAB dashboard"
+    Value: !If
+      - DoDeployLicenseServer
+      - !GetAtt MatlabProductionServerLicenseServerStack.Outputs.ServerAddress
+      - 'License Server was not deployed with this stack'
+Resources:
+  MatlabProductionServerLicenseServerStack:
+    Condition: DoDeployLicenseServer
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: 'https://network-license-manager-for-matlab-on-aws.s3.amazonaws.com/R2020a/license-manager-template.json'
+      Parameters:
+        VPC: !Ref ExistingVPC
+        Subnet: !Ref ExistingSubnet1
+        ClientIPAddress: !If [DoPublicIP, !Ref ClientIPAddress, !Ref ExistingVPCAddress]
+        ServerInstanceType: t2.micro
+        SSHKeyName: !Ref KeyPairName
+        Password: !Ref Password
+        ConfirmPassword: !Ref ConfirmPassword
+
+  MatlabProductionServerResourcesStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: 'https://matlab-production-server-templates.s3.amazonaws.com/CommonResourcesStack.yml'
+      Parameters:
+        ExistingVPC: !Ref ExistingVPC
+        ExistingVPCAddress: !Ref ExistingVPCAddress
+        ExistingSubnet1: !Ref ExistingSubnet1
+        ExistingSubnet2: !Ref ExistingSubnet2
+        KeyPairName: !Ref KeyPairName
+        ClientIPAddress: !Ref ClientIPAddress
+        AllowPublicIP: !Ref AllowPublicIP
+        NumWorkerNodes: !Ref NumWorkerNodes
+        WorkerInstanceType: !Ref WorkerInstanceType
+        WorkerSystem: !Ref WorkerSystem
+        SSLCertificateARN: !Ref SSLCertificateARN
+        EnablePersistence: !Ref EnablePersistence
+        LicenseServerSecurityGroup: !If
+          - DoDeployLicenseServer
+          - !GetAtt MatlabProductionServerLicenseServerStack.Outputs.SecurityGroup
+          - ''
+        LicenseServerPrivateDNS: !If
+          - DoDeployLicenseServer
+          - !GetAtt MatlabProductionServerLicenseServerStack.Outputs.ServerPrivateDNS
+          - ''
+        ParentStackName: !Ref AWS::StackName
