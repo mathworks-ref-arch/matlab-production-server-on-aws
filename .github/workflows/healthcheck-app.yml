@@ -32,8 +32,8 @@ jobs:
     - name: MPS ref Arch Health check test
       run: |
         cd healthcheck
-        setenv AWS_ACCESS_KEY_ID ${{ secrets.aws_access_key_id }}
-        setenv AWS_SECRET_ACCESS_KEY ${{ secrets.aws_secret_access_key }}
-        setenv AWS_REGION ${{ secrets.aws_region }}
+        export AWS_ACCESS_KEY_ID=${{ secrets.aws_access_key_id }}
+        export AWS_SECRET_ACCESS_KEY=${{ secrets.aws_secret_access_key }}
+        export AWS_REGION=${{ secrets.aws_region }}
         python test_mpsrefarch_HealthCheck.py ${{ secrets.KeyPairName }} ${{ secrets.lmpassword }} ${{ secrets.ipaddress }}
 
