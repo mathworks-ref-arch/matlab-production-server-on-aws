@@ -40,7 +40,7 @@ with Production Server Compiler App](https://www.mathworks.com/help/mps/ml_code/
 To edit the server configuration:
 1. On the cloud console navigation menu, select **Administration** > **Server Configuration**. 
 1. Find the server property you want to change and enter the appropriate value. For
-a list of server properties and values, see [Server Properties](http://www.mathworks.com/help/mps/propertylist.html).
+a list of server properties and values, see [Server Properties](https://www.mathworks.com/help/mps/referencelist.html?type=property).
 
 >**NOTE**: To assign a value to a property that has been commented out, remove the #
 symbol and assign a value.
@@ -130,7 +130,7 @@ To change the number of VMs:
 2. Expand **Services** and select **CloudFormation** under Management Tools. 
 3. Select the stack you created for this solution.
 4. Expand **Outputs**.
-5. Look for the key named MatlabProductionServerAutoScalingGroup and click the corresponding URL listed under value. This will take you to the auto scaling group associated with your stack.
+5. Look for the key named `MatlabProductionServerAutoScalingGroup` and click the corresponding URL listed under value. This will take you to the auto scaling group associated with your stack.
 6. In the **Details** tab, click **Edit** and change the value for the **Desired** field to the number of VMs you want. 
 
 If you have a standard 24 worker MATLAB Production Server license and select `t2.xlarge` as the **Instance type for the worker nodes** during setup, you will need 6 worker nodes to fully utilize the workers in your license.
