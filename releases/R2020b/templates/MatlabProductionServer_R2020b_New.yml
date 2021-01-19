@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: "MATLAB Production Server R2020a new VPC"
+Description: "MATLAB Production Server R2020b new VPC"
 Parameters:
   KeyPairName: 
     Type: "AWS::EC2::KeyPair::KeyName"
@@ -113,9 +113,9 @@ Rules:
         AssertDescription: "Passwords do not match"
 
 Outputs: 
-  MatlabProductionServerVM: 
+  MatlabProductionServerCloudConsole: 
     Description: "Address of the MATLAB Production Server Cloud Console"
-    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MatlabProductionServerVM
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MatlabProductionServerCloudConsole
   MATLABProductionServerApplicationsBucket: 
     Description: "S3 Bucket for MATLAB Production Server applications (CTF files)"
     Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerApplicationsBucket
@@ -134,6 +134,9 @@ Outputs:
   MatlabProductionServerLicenseServer:
     Description: "Address of the network license manager for MATLAB dashboard"
     Value: !GetAtt MatlabProductionServerLicenseServerStack.Outputs.ServerAddress
+  MatlabProductionServerEndpoint:
+    Description: "Use this URL to make MATLAB function execution requests"
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MatlabProductionServerEndpoint    
 
 Conditions:
   DoPublicIP: !Equals ['Yes', !Ref AllowPublicIP]
@@ -142,7 +145,7 @@ Resources:
   MatlabProductionServerVPCStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: 'https://matlab-production-server-templates.s3.amazonaws.com/VPCStack.yml'
+      TemplateURL: 'https://matlab-production-server-templates.s3.amazonaws.com/r2020b_mps_refarch/VPCStack.yml'
       Parameters:
         AllowPublicIP: !Ref AllowPublicIP
 
@@ -162,7 +165,7 @@ Resources:
   MatlabProductionServerResourcesStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: 'https://matlab-production-server-templates.s3.amazonaws.com/CommonResourcesStack.yml'
+      TemplateURL: 'https://matlab-production-server-templates.s3.amazonaws.com/r2020b_mps_refarch/CommonResourcesStack.yml'
       Parameters:
         ExistingVPC: !GetAtt MatlabProductionServerVPCStack.Outputs.VPCID
         ExistingVPCAddress: !GetAtt MatlabProductionServerVPCStack.Outputs.VPCCIDR

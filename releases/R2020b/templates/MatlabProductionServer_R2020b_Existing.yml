@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: "MATLAB Production Server R2020a Existing VPC"
+Description: "MATLAB Production Server R2020b Existing VPC"
 Parameters:
   KeyPairName:
     Type: "AWS::EC2::KeyPair::KeyName"
@@ -178,9 +178,9 @@ Conditions:
     - !Ref DeployLicenseServer
   DoPublicIP: !Equals ['Yes', !Ref AllowPublicIP]
 Outputs: 
-  MatlabProductionServerVM: 
+  MatlabProductionServerCloudConsole: 
     Description: "Address of the MATLAB Production Server Cloud Console"
-    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MatlabProductionServerVM
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MatlabProductionServerCloudConsole
   MATLABProductionServerApplicationsBucket: 
     Description: "S3 Bucket for MATLAB Production Server applications (CTF files)"
     Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerApplicationsBucket
@@ -202,6 +202,9 @@ Outputs:
       - DoDeployLicenseServer
       - !GetAtt MatlabProductionServerLicenseServerStack.Outputs.ServerAddress
       - 'License Server was not deployed with this stack'
+  MatlabProductionServerEndpoint:
+    Description: "Use this URL to make MATLAB function execution requests"
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MatlabProductionServerEndpoint       
 Resources:
   MatlabProductionServerLicenseServerStack:
     Condition: DoDeployLicenseServer
@@ -220,7 +223,7 @@ Resources:
   MatlabProductionServerResourcesStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: 'https://matlab-production-server-templates.s3.amazonaws.com/CommonResourcesStack.yml'
+      TemplateURL: 'https://matlab-production-server-templates.s3.amazonaws.com/r2020b_mps_refarch/CommonResourcesStack.yml'
       Parameters:
         ExistingVPC: !Ref ExistingVPC
         ExistingVPCAddress: !Ref ExistingVPCAddress
