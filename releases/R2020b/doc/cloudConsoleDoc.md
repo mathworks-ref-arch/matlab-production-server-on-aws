@@ -1,4 +1,4 @@
-# MATLAB Production Server Cloud Console User's Guide
+# MATLAB Production Server Cloud Console User Guide
 
 1. [Get Information About Server Instances](#get-information-about-server-instances)
 1. [Get HTTPS End Point](#get-https-end-point)
@@ -14,16 +14,16 @@
 To get information about server instances:
 - On the cloud console navigation menu, click **Home**.
 
-![Cloud Console Home](/releases/R2020a/images/cloudConsoleHome02.png)
+![Cloud Console Home](/releases/R2020b/images/cloudConsoleHome02.png)
 
-[Back to Top](/releases/R2020a/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide) | [Back to Main](/README.md#matlab-production-server-on-amazon-web-services)
+[Back to Top](/releases/R2020b/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide) | [Back to Main](/README.md#matlab-production-server-on-amazon-web-services)
 
 ## Get HTTPS End Point
 To get the HTTPS end point:
 1. On the cloud console navigation menu, click **Home**. 
 1. Copy the parameter value listed next to **HTTPS Server Endpoint**.
 
-[Back to Top](/releases/R2020a/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide) | [Back to Main](/README.md#matlab-production-server-on-amazon-web-services)
+[Back to Top](/releases/R2020b/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide) | [Back to Main](/README.md#matlab-production-server-on-amazon-web-services)
 
 ## Upload a MATLAB Application Created with MATLAB Compiler SDK
 To upload an application:
@@ -34,7 +34,7 @@ To upload an application:
 For information on how to create an application, see [Package Deployable Archives
 with Production Server Compiler App](https://www.mathworks.com/help/mps/ml_code/create-a-deployable-ctf-archive-with-the-library-compiler-app.html) in the MATLAB® Compiler SDK™ documentation.
   
-[Back to Top](/releases/R2020a/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide) | [Back to Main](/README.md#matlab-production-server-on-amazon-web-services)
+[Back to Top](/releases/R2020b/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide) | [Back to Main](/README.md#matlab-production-server-on-amazon-web-services)
 
 ## Edit the Server Configuration
 To edit the server configuration:
@@ -51,7 +51,7 @@ symbol and assign a value.
 
 >**NOTE**: When setting the `num-workers` property in the server configuration you need to carefully consider your cluster setup. Each virtual machine in the cluster runs an instance of MATLAB Production Server and each instance runs multiple MATLAB workers. MathWorks recommends 1 core per MATLAB worker. For example, a `Standard_D4s_v3` **Server VM Instance Size** has 4 cores and therefore we recommend that you set `num-workers` be no more than 4 per instance.<p>`--num-workers 4`</p> 
 
-[Back to Top](/releases/R2020a/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide) | [Back to Main](/README.md#matlab-production-server-on-amazon-web-services)
+[Back to Top](/releases/R2020b/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide) | [Back to Main](/README.md#matlab-production-server-on-amazon-web-services)
 
 ## Edit the Redis ElastiCache Configuration
 To edit the Azure Cache for Redis configuration:
@@ -75,7 +75,7 @@ If you plan on using a different Redis ElastiCache, specify the `<connection_nam
 
 For more information, see [Use a Data Cache to Persist Data](https://www.mathworks.com/help/mps/ml_code/use-a-data-cache-to-persist-data.html).
 
-[Back to Top](/releases/R2020a/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide) | [Back to Main](/README.md#matlab-production-server-on-amazon-web-services)
+[Back to Top](/releases/R2020b/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide) | [Back to Main](/README.md#matlab-production-server-on-amazon-web-services)
 
 
 ## Upload an HTTPS Certificate
@@ -119,7 +119,7 @@ For more information, see [Access Control](https://www.mathworks.com/help/mps/se
 
 After you enter the details of each file and click **Save and Apply Configuration**, you will need to edit the [Server Configuration](#edit-the-server-configuration) and enable the option `access-control-provider`.
 
-[Back to Top](/releases/R2019a/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide) | [Back to Main](/README.md#matlab-production-server-on-amazon-web-services)
+[Back to Top](/releases/R2020b/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide) | [Back to Main](/README.md#matlab-production-server-on-amazon-web-services)
 
 
 ## Change the Number of Virtual Machines
@@ -135,7 +135,7 @@ To change the number of VMs:
 
 If you have a standard 24 worker MATLAB Production Server license and select `t2.xlarge` as the **Instance type for the worker nodes** during setup, you will need 6 worker nodes to fully utilize the workers in your license.
 
-[Back to Top](/releases/R2019a/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide) | [Back to Main](/README.md#matlab-production-server-on-amazon-web-services)
+[Back to Top](/releases/R2020b/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide) | [Back to Main](/README.md#matlab-production-server-on-amazon-web-services)
 
 ## Change Self-signed Certificates
 You can change the self-signed certificate to:
@@ -167,4 +167,4 @@ To change the self-signed certificate to the load balancer you need to create a 
 
 7. Click **Save**.
 
-[Back to Top](/releases/R2019a/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide) | [Back to Main](/README.md#matlab-production-server-on-amazon-web-services)
+[Back to Top](/releases/R2020b/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide) | [Back to Main](/README.md#matlab-production-server-on-amazon-web-services)
