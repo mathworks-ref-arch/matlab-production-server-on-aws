@@ -8,7 +8,7 @@ def main(keypairname, password, ipAddress):
                   {'ParameterKey': 'Password', 'ParameterValue': password},
                   {'ParameterKey': 'ConfirmPassword', 'ParameterValue': password}]
 
-    template_url = "https://matlab-production-server-templates.s3.amazonaws.com/MatlabProductionServer_R2020a_New.yml"
+    template_url = "https://matlab-production-server-templates.s3.amazonaws.com/r2020b_mps_refarch/MatlabProductionServer_New.yml"
     
     try:
         print("deploying the stack")
