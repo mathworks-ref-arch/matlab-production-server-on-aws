@@ -13,6 +13,7 @@ def main(keypairname, password, ipAddress):
     try:
         print("deploying the stack")
         stack = deploy.deploy_stack(template_url, parameters, "us-east-1", "mpsRefArchAuto")
+
         print("success deploying the stack")
     except Exception as e:
         raise (e)
