@@ -1,0 +1,4 @@
+https://s3.amazonaws.com/matlab-production-server-templates/MatlabProductionServer_Windows_R2019a_New.template
+https://s3.amazonaws.com/matlab-production-server-templates/MatlabProductionServer_Linux_R2019a_New.template
+https://s3.amazonaws.com/matlab-production-server-templates/MatlabProductionServer_Windows_R2019a_Existing.template
+https://s3.amazonaws.com/matlab-production-server-templates/MatlabProductionServer_Linux_R2019a_Existing.template
