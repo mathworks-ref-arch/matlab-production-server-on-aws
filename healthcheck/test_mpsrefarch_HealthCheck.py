@@ -16,7 +16,7 @@ def main(keypairname, password, ipAddress):
                   {'ParameterKey': 'Password', 'ParameterValue': password},
                   {'ParameterKey': 'ConfirmPassword', 'ParameterValue': password}]
 
-    # Find latest MATLAB release from Github page and get template json path.
+    # Find latest MATLAB release from Github page and get template url text
     res = requests.get(f"https://github.com/mathworks-ref-arch/{ref_arch_name}/blob/master/releases/")
     
     latest_releases = [re.findall("master/releases/(R\d{4}[ab]\\b)", res.text)[-1], re.findall("master/releases/(R\d{4}[ab]\\b)", res.text)[-2]]
