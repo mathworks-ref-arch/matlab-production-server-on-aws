@@ -1,2 +1,2 @@
-https://matlab-production-server-templates.s3.amazonaws.com/r2020b_mps_refarch/MatlabProductionServer_New.yml
-https://matlab-production-server-templates.s3.amazonaws.com/r2020b_mps_refarch/MatlabProductionServer_Existing.yml
+https://matlab-production-server-templates.s3.amazonaws.com/r2021a_mps_refarch/MatlabProductionServer_New.yml
+https://matlab-production-server-templates.s3.amazonaws.com/r2021a_mps_refarch/MatlabProductionServer_Existing.yml

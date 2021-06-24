@@ -19,7 +19,7 @@ accomplished using an AWS CloudFormation template. The template is a JSON
 file that defines the resources needed to deploy and manage MATLAB Production
 Server on AWS. Once deployed, you can manage the server using the
 MATLAB Production Server cloud console&mdash;a web-based interface to
-configure and manage server instances on the cloud. For more information, see [MATLAB Production Server Cloud Console User Guide](/releases/R2020b/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide).
+configure and manage server instances on the cloud. For more information, see [MATLAB Production Server Cloud Console User Guide](/releases/R2021a/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide).
 For information about the architecture of this solution, see [Architecture and Resources](#architecture-and-resources). For information about AWS templates, see [AWS CloudFormation Templates](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-guide.html). <br>
 
 The default MATLAB Production Server deployment template uses the Network License Manager for MATLAB reference architecture to manage MATLAB Production Server licenses. The template for using an exisitng VPC for the deployment provides an option to either deploy the Network License Manager or use your own license server. For more information about the Network License Manager for MATLAB reference architecture, see [Network License Manager for MATLAB](https://github.com/mathworks-ref-arch/license-manager-for-matlab-on-aws).
@@ -37,7 +37,7 @@ Click the **Launch Stack** button to deploy resources on AWS. This will open the
 
 | Release | Windows Server 2019 or Ubuntu 18.04 VM |
 |---------------|------------------------|
-| MATLAB R2020b | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/r2020b_mps_refarch/MatlabProductionServer_New.yml" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a> |
+| MATLAB R2021a | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/r2021a_mps_refarch/MatlabProductionServer_New.yml" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a> |
 
 For other releases, see [How do I launch a template that uses a previous MATLAB release?](#how-do-i-launch-a-template-that-uses-a-previous-matlab-release)
 <p><strong>Note:</strong> Creating a stack on AWS can take at least 20 minutes.</p>
@@ -96,16 +96,16 @@ For other releases, see [How do I launch a template that uses a previous MATLAB 
 
 
 ## Step 6. Log in to the Cloud Console
-The username to the cloud console is **Administrator**. For the password, paste the password you copied to the clipboard by completing [Step 4](#step-4-get-the-password-to-the-cloud-console). The cloud console provides a web-based interface to configure and manage server instances on the cloud. For more information on how to use the cloud console, see [MATLAB Production Server Cloud Console User  Guide](/releases/R2020b/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide).  
+The username to the cloud console is **Administrator**. For the password, paste the password you copied to the clipboard by completing [Step 4](#step-4-get-the-password-to-the-cloud-console). The cloud console provides a web-based interface to configure and manage server instances on the cloud. For more information on how to use the cloud console, see [MATLAB Production Server Cloud Console User  Guide](/releases/R2021a/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide).  
 
-![MATLAB Production Server Cloud Console](/releases/R2020b/images/cloudConsoleLogin.png?raw=true)
+![MATLAB Production Server Cloud Console](/releases/R2021a/images/cloudConsoleLogin.png?raw=true)
 
 You are now ready to use MATLAB Production Server on AWS. 
 
 >**Accept Terms and Conditions**: Access to and use of the MATLAB Production Server cloud console is governed by license terms in the file `C:\MathWorks\Cloud Console License.txt` (Linux: `/MathWorks/Cloud Console License.txt`) available on the `servermachine` in the resource group for this solution. 
 
 
->**Note**: The cloud console uses a self-signed certificate which you can change. For information on changing the self-signed certificates, see [Change Self-signed Certificates](/releases/R2020b/doc/cloudConsoleDoc.md#change-self-signed-certificates).
+>**Note**: The cloud console uses a self-signed certificate which you can change. For information on changing the self-signed certificates, see [Change Self-signed Certificates](/releases/R2021a/doc/cloudConsoleDoc.md#change-self-signed-certificates).
 
 To run applications on MATLAB Production Server, you need to create applications using MATLAB Compiler SDK. For more information, see [Deployable Archive Creation](https://www.mathworks.com/help/mps/deployable-archive-creation.html) in the MATLAB Production Server product documentation.
 
@@ -138,7 +138,7 @@ When you run MATLAB Production Server on the cloud you get two HTTP/HTTPS endpoi
 
 1. An HTTPS endpoint to the cloud console. This endpoint is used to connect to the cloud console. The cloud console comes with a self-signed certificate.  
 
-For information on changing the self-signed certificates, see [Change Self-signed Certificates](/releases/R2020b/doc/cloudConsoleDoc.md#change-self-signed-certificates). 
+For information on changing the self-signed certificates, see [Change Self-signed Certificates](/releases/R2021a/doc/cloudConsoleDoc.md#change-self-signed-certificates). 
 
 ### Create Self-signed Certificate
 For information on creating a self-signed certificate, see [Create and Sign an X509 Certificate](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/configuring-https-ssl.html).
@@ -187,7 +187,7 @@ Deploying this reference architecture will create several resources in your
 resource group.
 
 
-![Architecture](/releases/R2020b/images/Architecture.png?raw=true)
+![Architecture](/releases/R2021a/images/Architecture.png?raw=true)
 
 *Architecture on AWS*
 
@@ -195,7 +195,7 @@ resource group.
 
 | Resource Type                                                              | Number of Resources | Description                                                                                                                                                                                                                                                                                                                        |
 |----------------------------------------------------------------------------|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| AWS EC2 Instance                                                           | 2                   | <ol><li>Virtual machine (VM) that hosts the MATLAB Production Server Cloud Console. Use the cloud console to: <ul><li>Get HTTP/HTTPS endpoint to make requests</li><li> Upload applications (CTF files) to the server</li><li> Manage server configurations</li><li> Manage the HTTPS certificate</li></ul><p>For more information, see [MATLAB Production Server Cloud Console User Guide](/releases/R2020b/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide).</li><li>VM that hosts the Network License Manager for MATLAB. For more information, see [Network License Manager for MATLAB](https://github.com/mathworks-ref-arch/license-manager-for-matlab-on-aws).</li></ol>   |
+| AWS EC2 Instance                                                           | 2                   | <ol><li>Virtual machine (VM) that hosts the MATLAB Production Server Cloud Console. Use the cloud console to: <ul><li>Get HTTP/HTTPS endpoint to make requests</li><li> Upload applications (CTF files) to the server</li><li> Manage server configurations</li><li> Manage the HTTPS certificate</li></ul><p>For more information, see [MATLAB Production Server Cloud Console User Guide](/releases/R2021a/doc/cloudConsoleDoc.md#matlab-production-server-cloud-console-users-guide).</li><li>VM that hosts the Network License Manager for MATLAB. For more information, see [Network License Manager for MATLAB](https://github.com/mathworks-ref-arch/license-manager-for-matlab-on-aws).</li></ol>   |
 | Auto Scaling Group                                                         | 1                   | Manages the number of identical VMs to be deployed. Each VM runs an instance of MATLAB Production Server which in turn runs multiple MATLAB workers.                                                                                                                                                                               |
 | Load Balancer                                                              | 1                   | Provides routing and load balancing service to MATLAB Production Server instances. The MATLAB Production Server cloud console retrieves the HTTP/HTTPS endpoint for making requests to the server from the load balancer resource.<p>**NOTE**: Provides HTTPS endpoint to the server for making requests.</p>                                                                                           |
 | S3 Bucket                                                                  | 1                  | S3 storage bucket created during the creation of the stack where applications deployed to the reference architecture are stored.                                                                                                                                                                                                  |
@@ -210,7 +210,7 @@ Use the following templates to launch the reference architecture within an exist
 
 | Release | Windows Server 2019 or Ubuntu 18.04 VM |
 |---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| R2020b | <a  href ="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/r2020b_mps_refarch/MatlabProductionServer_Existing.yml"  target ="_blank" >      <img  src ="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png" />  </a> |
+| R2021a | <a  href ="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/r2021a_mps_refarch/MatlabProductionServer_Existing.yml"  target ="_blank" >      <img  src ="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png" />  </a> |
 
 In addition to the parameters specified in the section [Configure the Stack](#step-2-configure-the-stack), you will need to specify the following parameters in the template to use your existing VPC.
 
@@ -257,7 +257,7 @@ Find the IP address of the license server from the AWS management console.
 1. In the AWS management console, navigate to the EC2 dashboard. 
 1. Select the license server instance.
 1. In the instance details, copy the value of **Private IPs**. For example, 172.30.1.126
-1. Add the private IP to the `--license` property. For example, `--license 27000@172.30.1.126`. For more information about editing the server configuration, see [Edit the Server Configuration](/releases/R2020b/doc/cloudConsoleDoc.md#edit-the-server-configuration). 
+1. Add the private IP to the `--license` property. For example, `--license 27000@172.30.1.126`. For more information about editing the server configuration, see [Edit the Server Configuration](/releases/R2021a/doc/cloudConsoleDoc.md#edit-the-server-configuration). 
 
 ## How do I launch a template that uses a previous MATLAB release?
 | Release | Windows Server VM | Ubuntu VM |
@@ -265,17 +265,19 @@ Find the IP address of the license server from the AWS management console.
 | MATLAB R2019a | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://s3.amazonaws.com/matlab-production-server-templates/MatlabProductionServer_Windows_R2019a_New.template" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a> | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://s3.amazonaws.com/matlab-production-server-templates/MatlabProductionServer_Linux_R2019a_New.template" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a>|
 | MATLAB R2019b | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/MatlabProductionServer_Windows_R2019b_New.template" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a> | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/MatlabProductionServer_Linux_R2019b_New.template" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a>|
 | MATLAB R2020a | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/MatlabProductionServer_R2020a_New.yml" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a> | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/MatlabProductionServer_R2020a_New.yml" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a>|
+| MATLAB R2020b | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/MatlabProductionServer_R2020a_New.yml" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a> | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/r2020b_mps_refarch/MatlabProductionServer_New.yml" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a>|
 
 For more information, see [previous releases](/releases).
 
 ## What versions of MATLAB Runtime are supported?
 
-| Release | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime |
-|---------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|
+| Release | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime | MATLAB Runtime |
+|---------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|----------------|---------------|
 | MATLAB R2019a |  R2016b | R2017a | R2017b | R2018a | R2018b | R2019a |  |
 | MATLAB R2019b |  |  R2017a | R2017b | R2018a | R2018b | R2019a |  R2019b |
 | MATLAB R2020a |  |  |  R2017b | R2018a | R2018b | R2019a |  R2019b | R2020a |
 | MATLAB R2020b |  |  |  | R2018a | R2018b | R2019a |  R2019b | R2020a | R2020b |
+| MATLAB R2021a |  |  |  |  | R2018b | R2019a |  R2019b | R2020a | R2020b | R2021a |
 
 
 ## Why do requests to the server fail with errors such as “untrusted certificate” or “security exception”?  
@@ -283,10 +285,10 @@ For more information, see [previous releases](/releases).
 These errors result from either CORS not being enabled on the server or due to the fact that the server endpoint uses a self-signed 
 certificate. 
 
-If you are making an AJAX request to the server, make sure that CORS is enabled in the server configuration. You can enable CORS by editing the property `--cors-allowed-origins` in the config file. For more information, see [Edit the Server Configuration](/releases/R2020b/doc/cloudConsoleDoc.md#edit-the-server-configuration).
+If you are making an AJAX request to the server, make sure that CORS is enabled in the server configuration. You can enable CORS by editing the property `--cors-allowed-origins` in the config file. For more information, see [Edit the Server Configuration](/releases/R2021a/doc/cloudConsoleDoc.md#edit-the-server-configuration).
 
 Also, some HTTP libraries and Javascript AJAX calls will reject a request originating from a server that uses a self-signed certificate. You may need to manually override the default security behavior of the client application. Or you can add a new 
-HTTP/HTTPS endpoint to the application gateway. For more information, see [Create a Listener](/releases/R2020b/doc/cloudConsoleDoc.md#create-a-listener). 
+HTTP/HTTPS endpoint to the application gateway. For more information, see [Create a Listener](/releases/R2021a/doc/cloudConsoleDoc.md#create-a-listener). 
 
 # Enhancement Request
 Provide suggestions for additional features or capabilities using the following link: https://www.mathworks.com/cloud/enhancement-request.html
