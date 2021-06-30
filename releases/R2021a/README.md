@@ -4,7 +4,11 @@
 
 Before starting, you need the following:
 
--   A MATLAB® Production Server™ license. For more information, see [Configure MATLAB Production Server Licensing on the Cloud](https://www.mathworks.com/help/licensingoncloud/matlab-production-server-on-the-cloud.html). In order to configure the license in the cloud, you need the MAC address of the license server on the cloud. For more information, see [Get License Server MAC Address](#get-license-server-mac-address).
+-   A MATLAB® Production Server™ license that meets the following conditions:
+    - Current on Software Maintenance Service (SMS).
+    - Linked to a MathWorks Account.
+    - Concurrent license type. To check your license type, view your MathWorks Account.
+    - Configured to use a network license manager on the virtual network. By default, the deployment of MATLAB Production Server includes a network license manager, but you can also use an existing license manager. In either case, activate or move the license after deployment. For details, see [Configure MATLAB Production Server Licensing on the Cloud](https://www.mathworks.com/help/licensingoncloud/matlab-production-server-on-the-cloud.html).
 -   An Amazon Web Services™ (AWS) account.
 -   A Key Pair for your AWS account in the US East (N. Virginia), EU (Ireland) or Asia Pacific (Tokyo) region. For more information, see [Amazon EC2 Key Pairs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html).
 
@@ -289,6 +293,13 @@ If you are making an AJAX request to the server, make sure that CORS is enabled 
 
 Also, some HTTP libraries and Javascript AJAX calls will reject a request originating from a server that uses a self-signed certificate. You may need to manually override the default security behavior of the client application. Or you can add a new 
 HTTP/HTTPS endpoint to the application gateway. For more information, see [Create a Listener](/releases/R2021a/doc/cloudConsoleDoc.md#create-a-listener). 
+
+## How do I allow multiple IP address ranges access to the cloud console?
+The deployment template allows you to enter only one range of IP addresses that can access the cloud console. After the deployment is complete, you can allow additional IP ranges access to the cloud console. For details, see 
+[Update security group rules](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/working-with-security-groups.html#updating-security-group-rules) in the AWS documentation.
+
+The name of the security group to update is ``` matlab-production-server-cloud-stack-elb-1-sg```. Depending on whether your cloud console uses HTTP or HTTPS, edit inbound rules to add additional IP address ranges in CIDR format for the either the ```HTTP``` type or the ```HTTPS``` type.
+
 
 # Enhancement Request
 Provide suggestions for additional features or capabilities using the following link: https://www.mathworks.com/cloud/enhancement-request.html
