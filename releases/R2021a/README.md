@@ -298,7 +298,7 @@ HTTP/HTTPS endpoint to the application gateway. For more information, see [Creat
 The deployment template allows you to enter only one range of IP addresses that can access the cloud console. After the deployment is complete, you can allow additional IP ranges access to the cloud console. For details, see 
 [Update security group rules](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/working-with-security-groups.html#updating-security-group-rules) in the AWS documentation.
 
-The name of the security group to update is ``` matlab-production-server-cloud-stack-elb-1-sg```. Depending on whether your cloud console uses HTTP or HTTPS, edit inbound rules to add additional IP address ranges in CIDR format for the either the ```HTTP``` type or the ```HTTPS``` type.
+The name of the security group to update is ``` matlab-production-server-cloud-stack-elb-1-sg```. Depending on whether your cloud console uses HTTP or HTTPS, edit inbound rules to add additional IP address ranges in CIDR format for either the ```HTTP``` type or the ```HTTPS``` type.
 
 
 # Enhancement Request
