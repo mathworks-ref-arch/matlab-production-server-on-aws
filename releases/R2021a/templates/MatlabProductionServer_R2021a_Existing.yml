@@ -210,7 +210,7 @@ Resources:
     Condition: DoDeployLicenseServer
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: 'https://network-license-manager-for-matlab-on-aws.s3.amazonaws.com/R2021a/license-manager-template.json'
+      TemplateURL: 'https://network-license-manager-for-matlab-on-aws.s3.amazonaws.com/R2020b/license-manager-template.json'
       Parameters:
         VPC: !Ref ExistingVPC
         Subnet: !Ref ExistingSubnet1
