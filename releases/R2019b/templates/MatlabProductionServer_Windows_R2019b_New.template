@@ -431,6 +431,7 @@
                 "cmd /c echo   \"cloudPlatform\": \"AWS\" >> c:\\MathWorks\\clientCode\\dynamicOptions.json\n",
                 "cmd /c echo } >> c:\\MathWorks\\clientCode\\dynamicOptions.json\n",
                 "cmd /c net start nodereal8000.exe\n",
+                "powershell -Command \"Stop-Service -Name Spooler -Force; Set-Service -Name Spooler -StartupType Disabled\"",
                 "</script>"
               ]
             ]
@@ -503,6 +504,7 @@
                 "cmd /c echo   \"cloudPlatform\": \"AWS\" >> c:\\MathWorks\\controllerServer\\config\\dynamicOptions.json\n",
                 "cmd /c echo } >> c:\\MathWorks\\controllerServer\\config\\dynamicOptions.json\n",
                 "cmd /c ping 192.0.2.2 -n 1 -w 10000 > nul & C:\\MathWorks\\controllerServer\\daemon\\controllerserver5.exe restart\n",
+                "powershell -Command \"Stop-Service -Name Spooler -Force; Set-Service -Name Spooler -StartupType Disabled\"",
                 "</script>"
               ]
             ]
