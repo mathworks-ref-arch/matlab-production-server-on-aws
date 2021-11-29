@@ -106,8 +106,7 @@ If you are using an existing license server, and have added the security group o
 1. In the stack detail for your stack, click **Resources**.
 1. Look for the **Logical ID** named `SecurityGroup` and click the corresponding URL listed under **Physical ID**. This will take you to the security group details.
 1. Click the **Inbound Rules** tab, then click **Edit Inbound Rules**.
-1. Click **Delete Rule** for the rules that have the tag `matlab-production-server-cloud-stack-elb-1-sg` and `
-matlab-production-server-cloud-stack-elb-2-sg` as their **Source**. 
+1. Click **Delete Rule** for the rules that have the tag `matlab-production-server-cloud-stack-elb-1-sg` as their **Source**. 
 1. Click **Save Rules**.
 
 To delete the stack, do the following:
@@ -117,47 +116,10 @@ To delete the stack, do the following:
 
 If you do not want to delete the entire deployment but want to minimize the cost, you can bring the number of instances in the Auto Scaling Group down to 0 and then scale it back up when the need arises.
 
-## Security [TBD]
-When you run MATLAB Production Server on the cloud you get two HTTPS endpoints. 
-
-1. An HTTPS endpoint to the load balancer that connects the server instances. This endpoint is displayed in the home page of the dashboard and is used to make requests to the server. Whether the endpoint is HTTP or HTTPS depends on whether you provide an SSL certificate during the creation of the stack.
-
-1. An HTTPS endpoint to the dashboard. This endpoint is used to connect to the dashboard.
-
-For information on changing the self-signed certificates, see [Change Self-signed Certificates](https://www.mathworks.com/help/mps/server/manage-aws-resources-reference-architecture.html#mw_51d64616-777c-4e15-af40-ab3d8dcc418f). For creating self-signed certificates, see [Create and Sign an X509 Certificate](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/configuring-https-ssl.html)
-
-### Upload SSL Certificate to AWS Certificate Manager
-
-1. Open the AWS Certificate Manager.
-2. Click the button at the top of the page to **Import a certificate**.
-3. Copy the contents of the `.crt` file containing the certificate into the field labeled **Certificate body**.
-4. Copy the contents of the `.pem` file containing the private key into the field labeled **Certificate private key**.
-5. Leave the field labeled **Certificate chain** blank.
-6. Click the button labeled **Review and import**.
-7. Review the settings and click the **Import** button.
-8. Copy the value of the Amazon Resource Name (ARN) field from the **Details** section of the certificate.
-
-The ARN value that you copied should be pasted into the **ARN of SSL Certificate** parameter of the template in [Step 2](#step-2-configure-the-stack).
-
-## View Logs
-Logs are available in Amazon CloudWatch. 
-1. In the AWS management console, select the stack that you deployed. 
-1. In the Stack Detail for your stack, expand the **Outputs** section.
-1. To view logs related to the MATLAB Production Server workers, look for the key named `MatlabProductionWorkerVMLogGroup`, and click the corresponding URL listed under value. These logs contain information about deployed archives (CTF files) and MATLAB function execution.
-1. To view logs related to the dashboard, look for the key named `MatlabProductionAdminVMLogGroup`, and click the corresponding URL listed under value.
-
-## Upload Multiple Applications
-You can upload multiple deployed archives (CTF files) using the Amazon S3 management console. 
-1. In the AWS management console, select the stack that you deployed. 
-1. In the Stack Detail for your stack, expand the **Outputs** section.
-1. Look for the key named `MATLABProductionServerApplicationsBucket`, and click the corresponding URL listed under value. Doing so takes you to the S3 console.
-1. In the S3 console, click **CTF**.
-1. Click **Upload** > **Add Files** to select and upload applications.
-
 ## Get License Server MAC Address
 The Network License Manager for MATLAB reference architecture manages the MATLAB Production Server license file. The deployment templates for the MATLAB Production Server reference architecture provide an option to deploy the license manager. You can also use an existing license manager that is located in the same VPC and the security group of the MATLAB Production Server instances. For more information about the Network License Manager for MATLAB reference architecture, see [Network License Manager for MATLAB](https://github.com/mathworks-ref-arch/license-manager-for-matlab-on-aws).
 
->**NOTE**: For a new license manager deployed with MATLAB Production Server, the license manager MAC address is available only after the deployment to the Cloud is complete. For information on deploying the solution, see [Deployment Steps](/README.md#deployment-steps).
+>**NOTE**: For a new license manager deployed with MATLAB Production Server, the license manager MAC address is available only after the deployment to the cloud is complete. For information on deploying the solution, see [Deployment Steps](/README.md#deployment-steps).
 
 To get the MAC address of the license manager: 
 1. Log in to the Network License Manager for MATLAB dashboard. For a license manager deployed with the MATLAB Production Server deployment, use the following credentials:<br>
@@ -202,7 +164,7 @@ In addition to the parameters specified in the section [Configure the Stack](#st
 | Existing VPC ID | ID of your existing VPC. |
 | IP address range of existing VPC | IP address range from the existing VPC. To find the IP address range: <ol><li>Log in to the AWS Console.</li><li>Navigate to the VPC dashboard and select your VPC.</li><li>Click the **CIDR blocks** tab.</li><li>The **IPv4 CIDR Blocks** gives the IP address range.</li></ol> |
 | Subnet 1 ID | ID of an existing subnet that will host the dashboard and other resources. |
-| Subnet 2 ID [TBD Subnet 3]| ID of an existing subnet that will host the application load balancer. |
+| Subnet 2 ID | ID of an existing subnet that will host the application load balancer. |
 
 - If Subnet 1 and Subnet 2 are public, then you must connect the EC2 VPC endpoint and the AutoScaling VPC endpoint to the VPC.
 - If Subnet 1 and Subnet 2 are private, then you must either deploy a NAT gateway in the VPC, or connect all of the following endpoints to the VPC:
@@ -232,7 +194,7 @@ To use an existing license server, you must add the security group of the server
 1. Click the **Inbound Rules** tab, then click **Edit Inbound Rules**.
 1. Click **Add Rule**.
 1. In the **Type** dropdown, select ```All TCP```.
-1. In the **Source**, search and add the ```matlab-production-server-cloud-stack-elb-1-sg``` security group. 
+1. In the **Source**, search and add the ```MatlabProductionServerCloudStackElb1Sg``` security group. 
 1. Click **Save Rules**.
 
 You must also add the private IP address of the license server to the `License Server` property in the **Settings** tab of the dashboard. 
@@ -271,7 +233,7 @@ certificate.
 If you are making an AJAX request to the server, make sure that CORS is enabled in the server configuration. You can enable CORS by editing the property `CORS Allowed Origins` property in the **Settings** tab of the dashboard.
 
 Also, some HTTP libraries and Javascript AJAX calls will reject a request originating from a server that uses a self-signed certificate. You may need to manually override the default security behavior of the client application. Or you can add a new 
-HTTPS endpoint to the application gateway. For more information, see [Create a Listener](/releases/R2021a/doc/cloudConsoleDoc.md#create-a-listener). 
+HTTPS endpoint to the application gateway. For more information, see [Change SSL Certificate](https://www.mathworks.com/help/mps/server/manage-aws-resources-reference-architecture.html#mw_51d64616-777c-4e15-af40-ab3d8dcc418f). 
 
 ## How do I allow multiple IP address ranges access to the dashboard?
 The deployment template allows you to enter only one range of IP addresses that can access the dashboard. After the deployment is complete, you can allow additional IP ranges access to the dashboard. For details, see 
