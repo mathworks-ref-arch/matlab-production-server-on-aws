@@ -57,6 +57,7 @@ For other releases, see [How do I launch a template that uses a previous MATLAB 
     | **Server VM Type** | Choose the AWS instance type to use for the server instances. All AWS instance types are supported. For more information, see [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/). <p><em>*Example*</em>: m5.xlarge</p> |
     | **Server VM Operating System** | Choose between Windows (Windows Server) and Linux(Ubuntu) to use for the server instances.  |
     | **Create Redis ElastiCache** | Choose whether you want to create a Redis ElastiCache service. Creating this service will allow you to use the persistence functionality of the server. Persistence provides a mechanism to cache data between calls to MATLAB code running on a server instance. |
+    | **Deploy License Server** | Specify whether you want to deploy the Network License Manager for MATLAB. This parameter is available only if you use the deployment template for an existing VPC. <p>You can deploy a license server only if your solution uses public IP adresses. If your solution uses private IP addresses, you must separately deploy a license server in a public subnet.</p> |
     ||**Dashboard Login**|
     | **Username for MATLAB Production Server Dashboard** | Specify the administrator user name to log in to the MATLAB Production Server dashboard. |
     | **Password for MATLAB Production Server and License Server** | Enter the password to use for logging in to MATLAB Production Server dashboard and the Network License Manager for MATLAB dashboard. |
