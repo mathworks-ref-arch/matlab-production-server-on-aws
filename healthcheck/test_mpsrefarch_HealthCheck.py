@@ -7,10 +7,11 @@ import urllib
 import random
 from datetime import date
 
-def main(keypairname, password, ipAddress):
+def main(keypairname, password, ipAddress, SSLCertificateARN):
     # Reference architectures in production.
     ref_arch_name = 'matlab-production-server-on-aws'
     parameters = [{'ParameterKey': 'KeyPairName', 'ParameterValue': keypairname},
+                  {'ParameterKey': 'SSLCertificateARN', 'ParameterValue': SSLCertificateARN},
                   {'ParameterKey': 'ClientIPAddress', 'ParameterValue': ipAddress},
                   {'ParameterKey': 'WorkerSystem', 'ParameterValue': 'Ubuntu'}, 
                   {'ParameterKey': 'Password', 'ParameterValue': password},
