@@ -14,6 +14,7 @@ def main(keypairname, password, ipAddress, SSLCertificateARN):
                   {'ParameterKey': 'SSLCertificateARN', 'ParameterValue': SSLCertificateARN},
                   {'ParameterKey': 'ClientIPAddress', 'ParameterValue': ipAddress},
                   {'ParameterKey': 'WorkerSystem', 'ParameterValue': 'Ubuntu'}, 
+                  {'ParameterKey': 'Username', 'ParameterValue': 'admin'},
                   {'ParameterKey': 'Password', 'ParameterValue': password},
                   {'ParameterKey': 'ConfirmPassword', 'ParameterValue': password}]
 
