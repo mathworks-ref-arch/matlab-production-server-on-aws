@@ -17,6 +17,12 @@ def main(keypairname, password, ipAddress, SSLCertificateARN):
                   {'ParameterKey': 'Username', 'ParameterValue': 'admin'},
                   {'ParameterKey': 'Password', 'ParameterValue': password},
                   {'ParameterKey': 'ConfirmPassword', 'ParameterValue': password}]
+    parameters1 = [{'ParameterKey': 'KeyPairName', 'ParameterValue': keypairname},
+                  {'ParameterKey': 'SSLCertificateARN', 'ParameterValue': SSLCertificateARN},
+                  {'ParameterKey': 'ClientIPAddress', 'ParameterValue': ipAddress},
+                  {'ParameterKey': 'WorkerSystem', 'ParameterValue': 'Ubuntu'},
+                  {'ParameterKey': 'Password', 'ParameterValue': password},
+                  {'ParameterKey': 'ConfirmPassword', 'ParameterValue': password}]
 
     # Find latest MATLAB release from Github page and get template url text
     res = requests.get(f"https://github.com/mathworks-ref-arch/{ref_arch_name}/blob/master/releases/")
@@ -36,7 +42,12 @@ def main(keypairname, password, ipAddress, SSLCertificateARN):
 
         try:
             print("deploying the stack")
-            stack = deploy.deploy_stack(template_url, parameters, "us-east-1", stack_name)
+            
+            if matlab_release == "R2021a" :
+                stack = deploy.deploy_stack(template_url, parameters1, "us-east-1", stack_name)
+            else :
+                stack = deploy.deploy_stack(template_url, parameters, "us-east-1", stack_name)
+                
             print("success deploying the stack")
         except Exception as e:
             raise (e)
