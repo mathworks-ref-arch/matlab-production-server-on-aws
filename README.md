@@ -8,7 +8,7 @@ Before starting, you need the following:
     - Current on Software Maintenance Service (SMS).
     - Linked to a MathWorks Account.
     - Concurrent license type. To check your license type, view your MathWorks Account.
-    - Configured to use a network license manager on the virtual network. By default, the deployment of MATLAB Production Server includes a network license manager, but you can also use an existing license manager. In either case, activate or move the license after deployment. For details, see [Configure MATLAB Production Server Licensing on the Cloud](https://www.mathworks.com/help/licensingoncloud/matlab-production-server-on-the-cloud.html).
+    - Configured to use a network license manager on the virtual network. By default, the deployment of MATLAB Production Server includes a network license manager, but you can also use an existing license manager. In either case, activate or move the license after deployment. For details, see [Configure MATLAB Production Server Licensing on the Cloud](https://www.mathworks.com/help/mps/server/configure-matlab-production-server-license-for-use-on-the-cloud.html).
 -   An Amazon Web Services™ (AWS) account.
 -   A Key Pair for your AWS account in the US East (N. Virginia), EU (Ireland) or Asia Pacific (Tokyo) region. For more information, see [Amazon EC2 Key Pairs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html).
 
@@ -66,7 +66,7 @@ For other releases, see [How do I launch a template that uses a previous MATLAB 
     | **Name of Existing Key Pair**          | Choose the name of an existing EC2 Key Pair to allow access to all the VMs in the stack. For information about creating an Amazon EC2 key pair, see [Amazon EC2 Key Pairs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair). <p><em>*Example*</em>: boston-keypair<p> |
     | **Allow Connections from IP Address** | Specify the IP address range that is allowed to connect to the dashboard that manages the server. The format for this field is IP Address/Mask. <p><em>Example</em>: </p>10.0.0.1/32 <ul><li>This is the public IP address which can be found by searching for "what is my ip address" on the web. The mask determines the number of IP addresses to include.</li><li>A mask of 32 is a single IP address.</li><li>Use a [CIDR calculator](https://www.ipaddressguide.com/cidr) if you need a range of more than one IP addresses.</li><li>You may need to contact your IT administrator to determine which address is appropriate.</li></ul></p> |
     | **Make Solution Available over Internet** | Choose 'Yes' if you want your solution to use public IP addresses. |
-    | **ARN of SSL Certificate**             | Provide the Amazon Resource Name (ARN) of an existing certificate in the AWS Certificate Manager to enable secure HTTPS communication to the HTTPS server endpoint. For information on creating and uploading a self-signed certificate, see [Create and Sign an X509 Certificate](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/configuring-https-ssl.html) and [Import SSL Certificate]().<p><em>*Example*</em>: arn:aws:acm:us-east-1:12345:certificate/123456789012</p>|
+    | **ARN of SSL Certificate**             | Provide the Amazon Resource Name (ARN) of an existing certificate in the AWS Certificate Manager to enable secure HTTPS communication to the HTTPS server endpoint. For information on creating and uploading a self-signed certificate, see [Create and Sign an X509 Certificate](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/configuring-https-ssl.html) and [Import SSL Certificate](https://www.mathworks.com/help/mps/server/manage-aws-resources-reference-architecture.html#mw_b0d98763-0e90-48fc-bcc3-ff2755ffe722).<p><em>*Example*</em>: arn:aws:acm:us-east-1:12345:certificate/123456789012</p>|
 
 
     >**Note**: Make sure you select US East (N.Virginia), EU (Ireland) or Asia Pacific (Tokyo) as your region from the navigation panel on top. Currently, US East, EU (Ireland), and Asia Pacific (Tokyo) are the only supported regions.
@@ -81,7 +81,7 @@ For other releases, see [How do I launch a template that uses a previous MATLAB 
 1. Clicking **Create stack** takes you to the *Stack Detail* page for your stack. Wait for the status to reach **CREATE\_COMPLETE**.
 1. In the Stack Detail for your stack, click **Outputs**.
 1. Look for the key named `MatlabProductionServerLicenseServer` and click the corresponding URL listed under value. Doing so takes you to Network License Manager for MATLAB dashboard log in page.
-1. The user name for the Network License Manager for MATLAB dashboard is **manager**. For the password, enter the password that you entered in the **Network License Manager for MATLAB** section while creating the stack in [Step 2](#step-2-configure-the-stack).
+1. The user name for the Network License Manager for MATLAB dashboard is **manager**. For the password, enter the password that you entered in the **Network License Manager for MATLAB** section while creating the stack during deployment.
 1. Follow the instructions to upload your MATLAB Production Server license.
 
 
@@ -94,7 +94,7 @@ For other releases, see [How do I launch a template that uses a previous MATLAB 
 
 You are now ready to use MATLAB Production Server on AWS. 
 
-To run applications on MATLAB Production Server, you need to create applications using MATLAB Compiler SDK. For more information, see [Deployable Archive Creation](https://www.mathworks.com/help/mps/deployable-archive-creation.html) in the MATLAB Production Server product documentation.
+To run applications on MATLAB Production Server, you need to create applications using MATLAB Compiler SDK. For more information, see [Deployable Archive Creation](https://www.mathworks.com/help/mps/ml_code/create-a-deployable-archive-for-matlab-production-server.html) in the MATLAB Production Server product documentation.
 
 # Additional Information
 
@@ -158,7 +158,7 @@ Use the following templates to launch the reference architecture within an exist
 |---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | R2022a | <a  href ="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/r2022a_mps_refarch/mps-aws-refarch-existing-vpc-cf.yml"  target ="_blank" >      <img  src ="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png" />  </a> |
 
-In addition to the parameters specified in the section [Configure the Stack](#step-2-configure-the-stack), you will need to specify the following parameters in the template to use your existing VPC.
+In addition to the parameters specified in the section [Configure Stack](#step-2-configure-stack), you will need to specify the following parameters in the template to use your existing VPC.
 
 | Parameter  | Value |
 |----------------------------------|--------------------------------------------------------------------------------|
