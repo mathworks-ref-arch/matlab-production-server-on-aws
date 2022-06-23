@@ -94,7 +94,7 @@ For other releases, see [How do I launch a template that uses a previous MATLAB 
 
 You are now ready to use MATLAB Production Server on AWS. 
 
-To run applications on MATLAB Production Server, you need to create applications using MATLAB Compiler SDK. For more information, see [Deployable Archive Creation](https://www.mathworks.com/help/mps/ml_code/create-a-deployable-archive-for-matlab-production-server.html) in the MATLAB Production Server product documentation.
+To run applications on MATLAB Production Server, you need to create applications using MATLAB Compiler SDK. For more information, see [Create Deployable Archive for MATLAB Production Server](https://www.mathworks.com/help/mps/ml_code/create-a-deployable-archive-for-matlab-production-server.html) in the MATLAB Production Server product documentation.
 
 # Additional Information
 
@@ -158,7 +158,7 @@ Use the following templates to launch the reference architecture within an exist
 |---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | R2022a | <a  href ="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/r2022a_mps_refarch/mps-aws-refarch-existing-vpc-cf.yml"  target ="_blank" >      <img  src ="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png" />  </a> |
 
-In addition to the parameters specified in the section [Configure Stack](#step-2-configure-stack), you will need to specify the following parameters in the template to use your existing VPC.
+In addition to the parameters specified in the section [Configure the Stack](#step-2-configure-the-stack), you will need to specify the following parameters in the template to use your existing VPC.
 
 | Parameter  | Value |
 |----------------------------------|--------------------------------------------------------------------------------|
