@@ -1,3 +1,9 @@
+"""
+Copyright 2022 The MathWorks, Inc.
+
+Test tool for deploying the AWS stack
+"""
+
 import datetime
 import logging
 
