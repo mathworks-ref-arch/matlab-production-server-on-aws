@@ -34,5 +34,5 @@ jobs:
         export AWS_ACCESS_KEY_ID=${{ secrets.aws_access_key_id }}
         export AWS_SECRET_ACCESS_KEY=${{ secrets.aws_secret_access_key }}
         export AWS_REGION=eu-west-1
-        python test_healthcheck_existing_vnet.py ${{ secrets.KeyPairName }} ${{ secrets.lmpassword }} ${{ secrets.ipaddress }} ${{ secrets.SSLCertificateARN }} "eu-west-1" "Ubuntu"
+        python test_healthcheck_existing_vnet.py ${{ secrets.KeyPairNameIreland }} ${{ secrets.lmpassword }} ${{ secrets.ipaddress }} ${{ secrets.SSLCertificateARNIreland }} "eu-west-1" "Ubuntu"
 
