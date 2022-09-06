@@ -5,7 +5,7 @@ name: MATLAB Production Server Ref Arch AWS Health Check Test
 on:
  push:
  schedule:
-    - cron: '0 16 * * *'
+    - cron: '0 15 * * 4'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,6 +33,6 @@ jobs:
         cd healthcheck
         export AWS_ACCESS_KEY_ID=${{ secrets.aws_access_key_id }}
         export AWS_SECRET_ACCESS_KEY=${{ secrets.aws_secret_access_key }}
-        export AWS_REGION=${{ secrets.aws_region }}
-        python test_healthcheck_existing_vnet.py ${{ secrets.KeyPairName }} ${{ secrets.lmpassword }} ${{ secrets.ipaddress }} ${{ secrets.SSLCertificateARN }} "us-east-1" "Ubuntu"
+        export AWS_REGION=us-east-1
+        python test_healthcheck_existing_vnet.py ${{ secrets.KeyPairName }} ${{ secrets.lmpassword }} ${{ secrets.ipaddress }} ${{ secrets.SSLCertificateARN }} "us-east-1" "Windows"
 
