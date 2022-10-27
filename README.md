@@ -5,7 +5,6 @@
 Before starting, you need the following:
 
 -   A MATLAB® Production Server™ license that meets the following conditions:
-    - Current on Software Maintenance Service (SMS).
     - Linked to a MathWorks Account.
     - Concurrent license type. To check your license type, view your MathWorks Account.
     - Configured to use a network license manager on the virtual network. By default, the deployment of MATLAB Production Server includes a network license manager, but you can also use an existing license manager. In either case, activate or move the license after deployment. For details, see [Configure MATLAB Production Server Licensing on the Cloud](https://www.mathworks.com/help/mps/server/configure-matlab-production-server-license-for-use-on-the-cloud.html).
