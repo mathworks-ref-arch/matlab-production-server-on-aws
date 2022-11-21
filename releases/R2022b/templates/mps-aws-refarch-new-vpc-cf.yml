@@ -1,0 +1,247 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "R2022b MATLAB Production Server Reference Architecture with New VPC"
+Parameters:
+  KeyPairName: 
+    Type: "AWS::EC2::KeyPair::KeyName"
+    Description: "Enter the key pair name to use for all EC2 instances. If you do not have a key pair, create one in the EC2 console >> Network & Security >> Key Pairs."
+    ConstraintDescription: "Must be the name of an existing EC2 Key Pair."
+  ClientIPAddress: 
+    Description: "Allowed IP addresses that can connect to the MATLAB Production Server VM(s) and the dashboard VM. Specify the range in CIDR notation in the format IP Address/Suffix, where Suffix is an integer between 0 and 32. Example: 10.0.0.1/24."
+    Type: String
+    MinLength: 9
+    MaxLength: 18
+    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+    ConstraintDescription: "Must be a valid IP in CIDR notation of the form x.x.x.x/x"
+  AllowPublicIP: 
+    Description: "Specify whether the deployed solution should use public IP addresses."
+    Type: String
+    AllowedValues: 
+      - 'Yes'
+      - 'No'
+    Default: 'Yes'
+  
+  NumWorkerNodes: 
+    Description: "Each MATLAB Production Server instance runs on a VM. Specify the number of VMs to run server instances."
+    Type: Number
+    Default: 2
+    MinValue: 1
+    MaxValue: 24
+  
+  WorkerInstanceType: 
+    Description: "Specify the EC2 instance type to use for a server VM. Each server VM runs multiple MATLAB workers. The default number of workers is 4. Choosing a VM size where the number of vCPUs on a VM matches the number of workers is recommended. For more information on Amazon EC2 instance types and sizes, see https://aws.amazon.com/ec2/instance-types/"
+    Default: "m5.xlarge"
+    Type: String
+    AllowedValues:
+      - 'm5.xlarge' 
+      - 'm5.2xlarge' 
+      - 'm5.4xlarge' 
+      - 'm5.8xlarge' 
+      - 'm5.12xlarge'
+      - 'm5.16xlarge'
+      - 'm5.24xlarge'
+      - 'm5.metal'
+      - 'c5.xlarge' 
+      - 'c5.2xlarge'
+      - 'c5.4xlarge'
+      - 'c5.9xlarge'
+      - 'c5.12xlarge'
+      - 'c5.18xlarge'
+      - 'c5.24xlarge'
+      - 'c5.metal'
+      - 'r5.xlarge' 
+      - 'r5.2xlarge'
+      - 'r5.4xlarge'
+      - 'r5.8xlarge'
+      - 'r5.12xlarge'
+      - 'r5.16xlarge'
+      - 'r5.24xlarge'
+      - 'r5.metal'
+    ConstraintDescription: "Specify worker instance type."
+
+  WorkerSystem:
+    Description: Choose between Windows (Windows Server) and Linux (Ubuntu).
+    Type: String
+    AllowedValues:
+      - Ubuntu
+      - Windows
+
+  SSLCertificateARN: 
+    Description: "Enter the ARN to use for HTTPS connections to the server and dashboard. The ARN you provide must match an existing certificate in the AWS Certificate Manager."
+    Type: String
+    AllowedPattern: "arn:[\\w+=/,.@-]+:[\\w+=/,.@-]+:[\\w+=/,.@-]*:[0-9]+:[\\w+=,.@-]+(/[\\w+=,.@-]+)*"
+    ConstraintDescription: "Must be a valid certificate ARN of the form arn:aws:acm:region:123456789012:certificate/12345678-1234-1234-1234-123456789012"
+
+  EnablePersistence: 
+    Description: "Specify whether you want to deploy ElastiCache for Redis that lets you use the persistence functionality on the server."
+    Type: String
+    AllowedValues: 
+      - 'Yes'
+      - 'No'
+    Default: 'No'
+  Username:
+    Description: "Specify the administrator user name to log in to the MATLAB Production Server dashboard."
+    Type: String
+    AllowedPattern: "^[^'\\s\\$]*$" 
+    ConstraintDescription: Must not contain whitespace, single quote or $ sign
+
+  Password:
+    Description: "Specify the administrator password to log in to the MATLAB Production Server dashboard and MATLAB license server dashboard."
+    Type: String
+    AllowedPattern: "^[^'\\s\\$]*$" 
+    ConstraintDescription: Must not contain whitespace, single quote or $ sign
+    NoEcho: true
+    
+  ConfirmPassword:
+    Description: "Reenter the administrator password to log in to the MATLAB Production Server dashboard and MATLAB license server dashboard."
+    Type: String
+    NoEcho: true
+
+
+Metadata: 
+  "AWS::CloudFormation::Interface": 
+    ParameterGroups:
+      - Label:
+          default: Server
+        Parameters:
+          - NumWorkerNodes
+          - WorkerInstanceType
+          - WorkerSystem
+          - EnablePersistence
+      - Label:
+          default: Dashboard Login
+        Parameters:
+          - Username
+          - Password
+          - ConfirmPassword
+      - Label:
+          default: Network
+        Parameters:
+          - KeyPairName
+          - ClientIPAddress
+          - AllowPublicIP
+          - SSLCertificateARN
+
+    ParameterLabels: 
+      KeyPairName: 
+        default: "Name of Existing Key Pair"
+      NumWorkerNodes: 
+        default: "Number of Server VMs"
+      SSLCertificateARN: 
+        default: "ARN of SSL Certificate"
+      WorkerInstanceType: 
+        default: "Server VM Type"
+      WorkerSystem:
+        default: Choose between Windows (Windows Server) and Linux (Ubuntu).
+      Username:
+        default: Username for Dashboard
+      Password:
+        default: Password for MATLAB Production Server and License Server Dashboard
+      ConfirmPassword:
+        default: Confirm Password for MATLAB Production Server and License Server Dashboard
+      ClientIPAddress: 
+        default: "Allow Connections from IP Address"
+      AllowPublicIP: 
+        default: "Make Solution Available over Internet"
+      EnablePersistence: 
+        default: "Create ElastiCache for Redis"
+        
+Rules:
+  matchPasswords:
+    Assertions:
+      - Assert: !Equals [!Ref Password, !Ref ConfirmPassword]
+        AssertDescription: "Passwords do not match"
+
+Conditions:
+  DoPublicIP: !Equals 
+    - 'Yes'
+    - !Ref AllowPublicIP
+
+Mappings:
+  VarMap:
+    NestedTemplateURLs:
+      vpsStackURL: 'https://matlab-production-server-templates.s3.amazonaws.com/r2022b_mps_refarch/mw-aws-refarch-vpc-stack-cf.yml'
+      productionServerStackURL: 'https://matlab-production-server-templates.s3.amazonaws.com/r2022b_mps_refarch/mw-aws-refarch-cf.yml'
+
+Outputs: 
+  MATLABProductionServerAdminVM:
+    Description: Admin VM that hosts MATLAB Production Server dashboard
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerAdminVM
+  MatlabProductionServerLicenseServer:
+    Description: Address of the network license manager for MATLAB dashboard
+    Value: !GetAtt MatlabProductionServerLicenseServerStack.Outputs.ServerAddress
+  MATLABProductionServerApplicationsBucket: 
+    Description: "S3 Bucket for MATLAB Production Server applications (CTF files)"
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerApplicationsBucket
+  MATLABProductionServerDashboardURL:
+    Description: URL to access MATLAB Production Server dashboard
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerDashboardURL
+  MATLABProductionServerFunctionExecutionURL:
+    Description: MATLAB Execution Endpoint
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerFunctionExecutionURL
+  MATLABProductionServerAdminVMLogGroup:
+    Description: CloudWatch log group for admin VM
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerAdminVMLogGroup
+  MATLABProductionServerWorkerVMLogGroup:
+    Description: CloudWatch log group for worker VM
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerWorkerVMLogGroup
+  MATLABProductionServerAutoScalingGroup:
+    Description: Auto Scaling Group for managing the number of server VMs
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerAutoScalingGroup
+  MATLABProductionServerCloudStackCacheClusterAddress:
+    Description: Hostname of Redis cache cluster
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerCloudStackCacheClusterAddress
+  MATLABProductionServerCloudStackCacheClusterPort:
+    Description: Port number of Redis cache cluster
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerCloudStackCacheClusterPort
+  MATLABProductionServerLoadBalancer:
+    Description: Load balancer to change SSL certificate for MATLAB execution endpoint
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerLoadBalancer
+  MATLABProductionServerDashboardLoadBalancer:
+    Description: Load balancer to change SSL certificate for MATLAB Production Server dashboard
+    Value: !GetAtt MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerDashboardLoadBalancer    
+
+Resources:
+  MatlabProductionServerVPCStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !FindInMap [VarMap, NestedTemplateURLs , vpsStackURL]
+      Parameters:
+        AllowPublicIP: !Ref AllowPublicIP
+
+  MatlabProductionServerLicenseServerStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: 'https://network-license-manager-for-matlab-on-aws.s3.amazonaws.com/R2022a/license-manager-template.json'
+      Parameters:
+        VPC: !GetAtt MatlabProductionServerVPCStack.Outputs.VPCID
+        Subnet: !GetAtt MatlabProductionServerVPCStack.Outputs.PublicSubnet
+        ClientIPAddress: !If [DoPublicIP, !Ref ClientIPAddress, !GetAtt MatlabProductionServerVPCStack.Outputs.VPCCIDR]
+        ServerInstanceType: t2.micro
+        SSHKeyName: !Ref KeyPairName
+        Password: !Ref Password
+        ConfirmPassword: !Ref ConfirmPassword
+
+  MatlabProductionServerResourcesStack:
+    DependsOn:
+      - MatlabProductionServerVPCStack
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !FindInMap [VarMap, NestedTemplateURLs , productionServerStackURL]
+      Parameters:
+        ExistingVPC: !GetAtt MatlabProductionServerVPCStack.Outputs.VPCID
+        ExistingVPCAddress: !GetAtt MatlabProductionServerVPCStack.Outputs.VPCCIDR
+        ExistingSubnet1: !GetAtt MatlabProductionServerVPCStack.Outputs.Subnet1
+        ExistingSubnet2: !GetAtt MatlabProductionServerVPCStack.Outputs.Subnet2
+        KeyPairName: !Ref KeyPairName
+        ClientIPAddress: !Ref ClientIPAddress
+        AllowPublicIP: !Ref AllowPublicIP
+        SSLCertificateARN: !Ref SSLCertificateARN        
+        NumWorkerNodes: !Ref NumWorkerNodes
+        WorkerInstanceType: !Ref WorkerInstanceType
+        WorkerSystem: !Ref WorkerSystem
+        EnablePersistence: !Ref EnablePersistence
+        Username: !Ref Username
+        Password: !Ref Password
+        ConfirmPassword: !Ref ConfirmPassword
+        LicenseServerSecurityGroup: !GetAtt MatlabProductionServerLicenseServerStack.Outputs.SecurityGroup
+        LicenseServerPrivateDNS: !GetAtt MatlabProductionServerLicenseServerStack.Outputs.ServerPrivateDNS
