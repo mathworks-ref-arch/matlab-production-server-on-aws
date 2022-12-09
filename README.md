@@ -129,7 +129,7 @@ Deploying this reference architecture creates several resources in your
 resource group.
 
 
-![Architecture](/releases/R2022a/images/mps_ref_arch_aws_diagram.png?raw=true)
+![Architecture](/releases/R2022b/images/mps_ref_arch_aws_diagram.png?raw=true)
 
 *Architecture on AWS*
 

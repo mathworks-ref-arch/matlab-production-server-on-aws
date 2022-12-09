@@ -1,9 +1,9 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: "R2022b MATLAB Production Server Reference Architecture with Existing VPC"
+Description: R2022b MATLAB Production Server Reference Architecture with Existing VPC
 Parameters:
   KeyPairName: 
     Type: "AWS::EC2::KeyPair::KeyName"
-    Description: "Enter the key pair name to use for all EC2 instances. If you do not have a key pair, create one in the EC2 console >> Network & Security >> Key Pairs."
+    Description: 'Enter the key pair name to use for all EC2 instances. If you do not have a key pair, create one in the EC2 console >> Network & Security >> Key Pairs.'
     ConstraintDescription: "Must be the name of an existing EC2 Key Pair."
   ClientIPAddress: 
     Description: "Allowed IP addresses that can connect to the MATLAB Production Server VM(s) and the dashboard VM. Specify the range in CIDR notation in the format IP Address/Suffix, where Suffix is an integer between 0 and 32. Example: 10.0.0.1/24."
@@ -13,7 +13,7 @@ Parameters:
     AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
     ConstraintDescription: "Must be a valid IP in CIDR notation of the form x.x.x.x/x"
   AllowPublicIP: 
-    Description: "Specify whether the deployed solution should use public IP addresses."
+    Description: Specify whether the deployed solution should use public IP addresses.
     Type: String
     AllowedValues: 
       - 'Yes'
@@ -21,7 +21,7 @@ Parameters:
     Default: 'Yes'
   
   NumWorkerNodes: 
-    Description: "Each MATLAB Production Server instance runs on a VM. Specify the number of VMs to run server instances."
+    Description: Each MATLAB Production Server instance runs on a VM. Specify the number of VMs to run server instances.
     Type: Number
     Default: 2
     MinValue: 1
@@ -115,12 +115,12 @@ Parameters:
     AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
     ConstraintDescription: "Must be a valid IP CIDR range of the form x.x.x.x/x"
   ExistingSubnet1:
-    Description: "ID of an existing subnet that will host the dashboard and cloud resources."
+    Description: ID of an existing subnet that will host the dashboard and cloud resources.
     Type: "AWS::EC2::Subnet::Id"
-    ConstraintDescription: "Must be the ID of an existing Subnet."
+    ConstraintDescription: Must be the ID of an existing Subnet.
     Default: ""
   ExistingSubnet2:
-    Description: "ID of an existing subnet that will host the load balancer."
+    Description: ID of an existing subnet that will host the load balancer.
     Type: "AWS::EC2::Subnet::Id"
     ConstraintDescription: "Must be the ID of an existing Subnet."
     Default: ""
@@ -160,13 +160,13 @@ Metadata:
 
     ParameterLabels: 
       KeyPairName: 
-        default: "Name of Existing Key Pair"
+        default: Name of Existing Key Pair
       NumWorkerNodes: 
-        default: "Number of Server VMs"
+        default: Number of Server VMs
       SSLCertificateARN: 
-        default: "ARN of SSL Certificate"
+        default: ARN of SSL Certificate
       WorkerInstanceType: 
-        default: "Server VM Type"
+        default: Server VM Type
       WorkerSystem:
         default: Choose between Windows (Windows Server) and Linux (Ubuntu).
       Username:
@@ -176,19 +176,19 @@ Metadata:
       ConfirmPassword:
         default: Confirm Password for MATLAB Production Server and License Server Dashboard
       ClientIPAddress: 
-        default: "Allow Connections from IP Address"
+        default: Allow Connections from IP Address
       AllowPublicIP: 
-        default: "Make Solution Available over Internet"
+        default: Make Solution Available over Internet
       EnablePersistence: 
-        default: "Create ElastiCache for Redis"
+        default: Create ElastiCache for Redis
       ExistingVPC:
-        default: "Existing VPC ID"
+        default: Existing VPC ID
       ExistingVPCAddress:
-        default: "IP Address Range of Existing VPC"
+        default: IP Address Range of Existing VPC
       ExistingSubnet1:
-        default: "Subnet 1 ID"
+        default: Subnet 1 ID
       ExistingSubnet2:
-        default: "Subnet 2 ID"
+        default: Subnet 2 ID
         
 Rules:
   matchPasswords:
