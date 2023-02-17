@@ -33,16 +33,15 @@ The default MATLAB Production Server deployment template uses the Network Licens
 4. If necessary, [request a service limit increase](https://console.aws.amazon.com/support/home#/case/create?issueType=service-limit-increase) for the Amazon EC2 instance type or VPCs.  You might need to do this if you already have existing deployments that use that instance type or you think you might exceed the [default limit](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html) with this deployment.
 
 # Deploy Reference Architecture for Your Release
-To deploy the reference architecture, select your MATLAB Production Server release from the table and follow the instructions. Verify that you are using one of the supported MATLAB Runtime versions.
-| Instructions | Supported MATLAB Runtime Versions
-| ------------ | ---------------------------------
-| [R2023a](releases/R2023a/README.md) | R2020b, R2021a, R2021b, R2022a, R2022b, R2023a
-| [R2022b](releases/R2022b/README.md) | R2020a, R2020b, R2021a, R2021b, R2022a, R2022b
-| [R2022a](releases/R2022a/README.md) | R2019b, R2020a, R2020b, R2021a, R2021b, R2022a
-| [R2021b](releases/R2021b/README.md) | R2019a, R2019b, R2020a, R2020b, R2021a, R2021b
-| [R2021a](releases/R2021a/README.md) | R2018b, R2019a, R2019b, R2020a, R2020b, R2021a
-| [R2020b](releases/R2020b/README.md) | R2018a, R2018b, R2019a, R2019b, R2020a, R2020b
-
+To deploy the reference architecture, select your MATLAB Production Server release from the table and follow the instructions to deploy the server using the provided template.
+| Release | Supported MATLAB Runtime Versions | Supported Windows OS | Supported Linux OS |
+| ------- | --------------------------------- | -------------------- | ------------------ |
+| [R2023a](releases/R2023a/README.md) | R2023a, R2022b, R2022a, R2021b, R2021a, R2020b | Windows Server 2019 | Ubuntu 22.04 VM
+| [R2022b](releases/R2022b/README.md) | R2022b, R2022a, R2021b, R2021a, R2020b, R2020a | Windows Server 2019 | Ubuntu 22.04 VM
+| [R2022a](releases/R2022a/README.md) | R2022a, R2021b, R2021a, R2020b, R2020a, R2019b | Windows Server 2019 | Ubuntu 18.04 VM
+| [R2021b](releases/R2021b/README.md) | R2021b, R2021a, R2020b, R2020a, R2019b, R2019a | Windows Server 2019 | Ubuntu 18.04 VM
+| [R2021a](releases/R2021a/README.md) | R2021a, R2020b, R2020a, R2019b, R2019a, R2018b | Windows Server 2019 | Ubuntu 18.04 VM
+| [R2020b](releases/R2020b/README.md) | R2020b, R2020a, R2019b, R2019a, R2018b, R2018a | Windows Server 2019 | Ubuntu 18.04 VM
 
 # Architecture and Resources
 Deploying this reference architecture creates several resources in your
@@ -66,65 +65,6 @@ resource group.
 | CloudWatch | 1 | Enables viewing of logs. |
 
 # FAQ
-## How do I use an existing VPC to deploy MATLAB Production Server?
-
-Use the template for your release to launch the reference architecture within an existing VPC and subnet. This templates support both Windows and Linux operating systems. They provide an option to deploy the Network License Manager for MATLAB to manage MATLAB Production Server licenses. The license manager must be in the same VPC and security group as MATLAB Production Server.
-
-| Release | Template | Supported Windows OS | Supported Linux OS 
-|---------|----------| ------- | -----
-| [R2023a](/releases/R2023a) | <a  href ="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/r2023a_mps_refarch/mps-aws-refarch-existing-vpc-cf.yml"  target ="_blank" >      <img  src ="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png" />  </a> | Windows Server 2019 | Ubuntu 22.04 VM
-| [R2022b](/releases/R2022b) | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/r2022b_mps_refarch/mps-aws-refarch-new-vpc-cf.yml" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a> |Windows Server 2019 | Ubuntu 22.04 VM
-| [R2022a](/releases/R2022a) | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/r2022a_mps_refarch/mps-aws-refarch-new-vpc-cf.yml" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a> |Windows Server 2019 | Ubuntu 18.04 VM
-| [R2021b](/releases/R2021b) | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/r2021b_mps_refarch/mps-aws-refarch-new-vpc-cf.yml" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a> |Windows Server 2019 | Ubuntu 18.04 VM
-| [R2021a](/releases/R2021a) | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/r2021a_mps_refarch/MatlabProductionServer_R2021a_New.yml" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a> |Windows Server 2019 | Ubuntu 18.04 VM
-| [R2020b](/releases/R2020b) | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/r2020b_mps_refarch/MatlabProductionServer_New.yml" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a> |Windows Server 2019 | Ubuntu 18.04 VM
-
-
-In addition to the parameters specified in the **Configure Stack** section of your release-specific deployment instructions, to use your existing VPC, specify these template parameters:
-
-| Parameter | Value |
-|---------- | ----- |
-| Existing VPC ID | ID of your existing VPC. |
-| IP address range of existing VPC | IP address range from the existing VPC. To find the IP address range: <ol><li>Log in to the AWS Console.</li><li>Navigate to the VPC dashboard and select your VPC.</li><li>Click the **CIDR blocks** tab.</li><li>Get the IP address range listed under **IPv4 CIDR Blocks**.</li></ol> |
-| Subnet 1 ID | ID of an existing subnet that will host the dashboard and other resources. |
-| Subnet 2 ID | ID of an existing subnet that will host the application load balancer. |
-
-- If Subnet 1 and Subnet 2 are public, then you must connect the EC2 VPC endpoint and the AutoScaling VPC endpoint to the VPC.
-- If Subnet 1 and Subnet 2 are private, then you must either deploy a NAT gateway in the VPC, or connect all of these endpoints to the VPC:
-    - EC2 VPC endpoint
-    - AutoScaling VPC endpoint
-    - S3 VPC endpoint
-    - CloudFormation endpoint 
-
-For more information about creating endpoints, see the [AWS documentation](https://docs.aws.amazon.com/vpc/latest/userguide/vpce-interface.html#create-interface-endpoint).
-
-You also need to open these ports in your VPC:
-
-| Port | Description |
-|------|------------ |
-| `443` | Required for communicating with the dashboard and the MATLAB execution endpoint. |
-| `8000`, `8002`, `9910` | Required for communication between the dashboard and workers within the VPC.  These ports do not need to be open to the Internet. |
-| `27000`, `50115` | Required for communication between the Network License Manager and the workers. |
-| `22`, `3389` | Required for Remote Desktop functionality. This can be used for troubleshooting and debugging. |
-
-### How to use an existing license server in an existing VPC?
-To use an existing license server, select `No` for the *Deploy License Server* step of the deployment. You must also add the security group of the server VMs to the security group of the license server.
-1. In the AWS management console, select the stack that you deployed. 
-1. In the stack details page, click **Resources**.
-1. In the **Logical ID** named ```SecurityGroup```, click the corresponding URL listed under **Physical ID** to open the security group details.
-1. Click the **Inbound Rules** tab, and then click **Edit Inbound Rules**.
-1. Click **Add Rule**.
-1. In the **Type** dropdown, select ```All TCP```.
-1. Under **Source**, search and add the ```MatlabProductionServerCloudStackElb1Sg``` security group. 
-1. Click **Save Rules**.
-
-You must also add the private IP address of the license server to the `License Server` property in the **Settings** tab of the dashboard. 
-You can find the IP address of the license server from the AWS management console.
-1. In the AWS management console, navigate to the EC2 dashboard. 
-1. Select the license server instance.
-1. In the instance details, copy the value of **Private IPs**. For example: 172.30.1.126
-1. Add the private IP to the `License Server` property. For example: ` 27000@172.30.1.126` 
-
 
 ## Why do requests to the server fail with errors such as “untrusted certificate” or “security exception”?  
 These errors occur either when CORS is not enabled on the server or when the server endpoint uses a self-signed certificate. 

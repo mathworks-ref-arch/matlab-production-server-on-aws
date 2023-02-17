@@ -3,24 +3,26 @@
 # Deployment Steps
 Follow these steps to the deploy the R2023a MATLAB Production Server reference architecture on AWS. To deploy reference architectures for other releases, see [Deploy Reference Architecture for Your Release](/README.md#deploy-reference-architecture-for-your-release). 
 ## Step 1. Launch Template
-Click the **Launch Stack** button to deploy resources on AWS. This will open the AWS Management Console in your web browser.
+You can deploy resources on AWS by launching the template onto a new VPC or onto an existing VPC. Click the appropriate **Launch Stack** button for your AWS account to open the AWS Management Console in your web browser.
 
-| Release | Windows Server 2019 or Ubuntu 22.04 VM |
-|---------------|------------------------|
-| MATLAB R2023a | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/r2023a_mps_refarch/mps-aws-refarch-new-vpc-cf.yml" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a> |
+| Release | New VPC | Existing VPC |
+|---------|---------| ------------ |
+| R2023a | <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/r2023a_mps_refarch/mps-aws-refarch-new-vpc-cf.yml" target="_blank">     <img src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"/> </a> | <a  href ="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?templateURL=https://matlab-production-server-templates.s3.amazonaws.com/r2023a_mps_refarch/mps-aws-refarch-existing-vpc-cf.yml"  target ="_blank" >      <img  src ="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png" /> </a> |
+
+
 
 ## Step 2. Configure Stack
-1. Provide values for parameters in the **Create Stack** page:
+1. In the **Create Stack** page, specify these parameters:
 
-    | Parameter Name                         | Value                                                                                                                                                                                                                                                                                                                                                 |
-    |----------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+    | Parameter Name | Value |
+    |--------------- | ----- |
     | **Stack name**                         | Choose a name for the stack. After the deployment finishes, this name is displayed in the AWS console. <p><em>*Example*</em>: Boston</p>  |
     ||**Server**|
     | **Number of Server VMs**             | Choose the number of AWS instances to start for the server. <p><em>*Example*</em>: 6</p><p>For example, if you have a 24-worker MATLAB Production Server license and select `m5.xlarge` (4 cores) as the **Number of server VMs**, you need 6 worker nodes to fully use the workers in your license.</p><p>You can always underprovision the number instances, in which case you may end up using fewer workers than you are licensed for.</p>|
     | **Server VM Type** | Choose the AWS instance type to use for the server instances. All AWS instance types are supported. For more information, see [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/). <p><em>*Example*</em>: m5.xlarge</p> |
     | **Server VM Operating System** | Choose between Windows (Windows Server) and Linux (Ubuntu) to use for the server instances.  |
     | **Create Redis ElastiCache** | Choose whether you want to create a Redis ElastiCache service. Creating this service enables you to use the persistence functionality of the server. Persistence provides a mechanism to cache data between calls to MATLAB code running on a server instance. |
-    | **Deploy License Server** | Specify whether you want to deploy the Network License Manager for MATLAB. This parameter is available only if you use the deployment template for an existing VPC. <p>You can deploy a license server only if your solution uses public IP addresses. If your solution uses private IP addresses, you must separately deploy a license server in a public subnet.</p> |
+    | **Deploy License Server** | Specify whether you want to deploy the Network License Manager for MATLAB. This parameter is available only if you use the deployment template for an existing VPC. <p>You can deploy a license server only if your solution uses public IP addresses. If your solution uses private IP addresses, you must separately deploy a license server in a public subnet.</p><p>If you are using an existing VPC, see the [Use Existing License Server in Existing VPC](#use-existing-license-server-in-existing-vpc) section.</p> |
     ||**Dashboard Login**|
     | **Username for MATLAB Production Server Dashboard** | Specify the administrator username for logging in to the MATLAB Production Server Dashboard. |
     | **Password for MATLAB Production Server and License Server** | Specify the password to use for logging in to MATLAB Production Server Dashboard and Network License Manager for MATLAB Dashboard. |
@@ -33,6 +35,32 @@ Click the **Launch Stack** button to deploy resources on AWS. This will open the
 
 
     >**Note**: Make sure you select US East (N.Virginia), EU (Ireland) or Asia Pacific (Tokyo) as your region from the navigation panel on top. Currently, US East, EU (Ireland), and Asia Pacific (Tokyo) are the only supported regions.
+2. If you are deploying to an existing VPC, specify these additional parameters. For new VPCs, these parameters do not apply and are not available.
+
+    | Parameter Name | Value |
+    |--------------- | ----- |
+    | Existing VPC ID | ID of your existing VPC. |
+    | IP address range of existing VPC | IP address range from the existing VPC. To find the IP address range: <ol><li>Log in to the AWS Console.</li><li>Navigate to the VPC dashboard and select your VPC.</li><li>Click the **CIDR blocks** tab.</li><li>Get the IP address range listed under **IPv4 CIDR Blocks**.</li></ol> |
+    | Subnet 1 ID | ID of an existing subnet that will host the dashboard and other resources. |
+    | Subnet 2 ID | ID of an existing subnet that will host the application load balancer. |
+
+    - If Subnet 1 and Subnet 2 are public, then you must connect the EC2 VPC endpoint and the AutoScaling VPC endpoint to the VPC.
+    - If Subnet 1 and Subnet 2 are private, then you must either deploy a NAT gateway in the VPC, or connect all of these endpoints to the VPC:
+        - EC2 VPC endpoint
+        - AutoScaling VPC endpoint
+        - S3 VPC endpoint
+        - CloudFormation endpoint 
+
+    For more information about creating endpoints, see the [AWS documentation](https://docs.aws.amazon.com/vpc/latest/userguide/vpce-interface.html#create-interface-endpoint).
+
+    You also need to open these ports in your VPC:
+
+    | Port | Description |
+    |------|------------ |
+    | `443` | Required for communicating with the dashboard and the MATLAB execution endpoint. |
+    | `8000`, `8002`, `9910` | Required for communication between the dashboard and workers within the VPC.  These ports do not need to be open to the Internet. |
+    | `27000`, `50115` | Required for communication between the Network License Manager and the workers. |
+    | `22`, `3389` | Required for Remote Desktop functionality. This can be used for troubleshooting and debugging. |
 
 3. Review or edit your stack details. You must select the acknowledgements to create IAM resources. Otherwise, the deployment produces a `Requires capabilities : [CAPABILITY_IAM]` error and fails to create resources.
 
@@ -55,9 +83,29 @@ Click the **Launch Stack** button to deploy resources on AWS. This will open the
 
 You are now ready to use MATLAB Production Server on AWS. 
 
-To run applications on MATLAB Production Server, you need to create applications using MATLAB Compiler SDK. For more information, see [Create Deployable Archive for MATLAB Production Server](https://www.mathworks.com/help/compiler_sdk/mps_dev_test/create-a-deployable-archive-for-matlab-production-server.html).
+To run applications on MATLAB Production Server, you need to create applications using MATLAB Compiler SDK. For more information, see [Create Deployable Archive for MATLAB Production Server](https://www.mathworks.com/help/compiler_sdk/mps_dev_test/create-a-deployable-archive-for-matlab-production-server.html). 
 
 # Additional Information
+
+## Use Existing License Server in Existing VPC
+To manage MATLAB Production Server licenses, you can deploy an existing Network License Manager server for MATLAB to manage. The license manager must be in the same VPC and security group as MATLAB Production Server.
+
+To use an existing license server, select `No` for the *Deploy License Server* step of the deployment. You must also add the security group of the server VMs to the security group of the license server.
+1. In the AWS management console, select the stack that you deployed. 
+1. In the stack details page, click **Resources**.
+1. In the **Logical ID** named ```SecurityGroup```, click the corresponding URL listed under **Physical ID** to open the security group details.
+1. Click the **Inbound Rules** tab, and then click **Edit Inbound Rules**.
+1. Click **Add Rule**.
+1. In the **Type** dropdown, select ```All TCP```.
+1. Under **Source**, search and add the ```MatlabProductionServerCloudStackElb1Sg``` security group. 
+1. Click **Save Rules**.
+
+You must also add the private IP address of the license server to the `License Server` property in the **Settings** tab of the dashboard. 
+You can find the IP address of the license server from the AWS management console.
+1. In the AWS management console, navigate to the EC2 dashboard. 
+1. Select the license server instance.
+1. In the instance details, copy the value of **Private IPs**. For example: 172.30.1.126
+1. Add the private IP to the `License Server` property. For example: ` 27000@172.30.1.126`
 
 ## Delete Your Stack
 
