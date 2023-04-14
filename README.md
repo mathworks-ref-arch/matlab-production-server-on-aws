@@ -31,7 +31,7 @@ The default MATLAB Production Server deployment template uses the Network Licens
 1. If necessary, [request a service limit increase](https://console.aws.amazon.com/support/home#/case/create?issueType=service-limit-increase) for the Amazon EC2 instance type or VPCs.  You might need to do this if you already have existing deployments that use that instance type or you think you might exceed the [default limit](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html) with this deployment.
 
 # Deploy Reference Architecture for Your Release
-To deploy the reference architecture, select your MATLAB Production Server release from the table and follow the instructions to deploy the server using the provided template.
+To deploy the reference architecture, select your MATLAB Production Server release from the table and follow the instructions to deploy the server using the provided template. A deployment of MATLAB Production Server supports MATLAB Runtime versions up to six releases back.
 | Release | Supported MATLAB Runtime Versions |
 | ------- | --------------------------------- |
 | [R2023a](releases/R2023a/README.md) | R2023a, R2022b, R2022a, R2021b, R2021a, R2020b |
@@ -40,7 +40,7 @@ To deploy the reference architecture, select your MATLAB Production Server relea
 | [R2021b](releases/R2021b/README.md) | R2021b, R2021a, R2020b, R2020a, R2019b, R2019a |
 | [R2021a](releases/R2021a/README.md) | R2021a, R2020b, R2020a, R2019b, R2019a, R2018b |
 | [R2020b](releases/R2020b/README.md) | R2020b, R2020a, R2019b, R2019a, R2018b, R2018a |
-
+> **Note**: MathWorks provides templates for only the six most recent releases of MATLAB Production Server. Earlier templates are removed and are no longer supported.
 # Architecture and Resources
 Deploying this reference architecture creates several resources in your
 resource group.
