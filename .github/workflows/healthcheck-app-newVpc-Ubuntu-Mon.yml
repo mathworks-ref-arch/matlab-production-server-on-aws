@@ -1,6 +1,6 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
-name: MATLAB Production Server Ref Arch AWS Health Check Test
+name: MATLAB Production Server Ref Arch AWS new VPC Health Check Test us-east on Ubuntu
 
 on:
  push:
@@ -28,7 +28,7 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: MPS ref Arch Health check test
+    - name: MPS Ref Arch AWS new VPC Health Check Test us-east on Ubuntu
       run: |
         cd healthcheck
         export AWS_ACCESS_KEY_ID=${{ secrets.aws_access_key_id }}
