@@ -78,8 +78,8 @@ The deployment template allows you to enter only one range of IP addresses that 
 
 The name of the security group to update is ``` matlab-production-server-cloud-stack-elb-1-sg```. Edit inbound rules to add additional IP address ranges in CIDR format for the ```HTTPS``` type.
 
-## How do I upgrade an existing deployment to a newer version?
-Refer to the following instructions to upgrade an existing deployment: [Upgrading an Existing Deployment](UPGRADES.md)
+## How do I upgrade an existing deployment to a newer MATLAB version?
+Refer to the following instructions to upgrade an existing deployment to a newer MATLAB version: [Upgrading an Existing Deployment](UPGRADES.md)
 
 # Enhancement Request
 Provide suggestions for additional features or capabilities using the following link: https://www.mathworks.com/solutions/cloud.html
