@@ -9,7 +9,7 @@ This page shows you how to upgrade the MATLAB<sup>:registered:</sup> version of 
 
 - An existing deployment of MATLAB Production Server, as deployed by the reference architecture. 
 - A backup of all applications uploaded to your current MATLAB Production Server deployment. You can create this by copying the contents of the S3 bucket containing your application code archives (.ctf files) to a secure location. 
-- (Optional) An existing VPC with the required subnets and ports to deploy MATLAB Production Server to it. See "How do I use an existing VPC to deploy MATLAB Production Server" under the FAQ section of the reference architecture [documentation](https://github.com/mathworks-ref-arch/matlab-production-server-on-aws#deploy-reference-architecture-for-your-release) for the MATLAB release of your new deployment. If you already have an existing deployment in this VPC, these requirements should already be met.
+- (Optional) An existing VPC with the required subnets and ports to deploy MATLAB Production Server to it. See "How do I use an existing VPC to deploy MATLAB Production Server" under the FAQ section of the [reference architecture documentation](https://github.com/mathworks-ref-arch/matlab-production-server-on-aws#deploy-reference-architecture-for-your-release) for the MATLAB release of your new deployment. If you already have an existing deployment in this VPC, these requirements should already be met.
 
 
 ## Considerations
@@ -25,10 +25,10 @@ Set a custom DNS name for the MATLAB Production Server dashboard load balancer `
 
 ### Deployed Applications 
 MATLAB Production Server supports MATLAB Runtime versions from the six most recent releases. You can migrate applications that were compiled using a supported MATLAB Runtime version to the new MATLAB Production Server deployment:
-- If your application is compiled using a supported MATLAB Runtime version, follow Step 3 to migrate it.
+- If your application is compiled using a supported MATLAB Runtime version, follow [Step 3](UPGRADES.md#step-3-migrate-applications-to-the-new-deployment) to migrate it.
 - For all other applications, recompile using a supported version of MATLAB Runtime. See the following link for information on how to create deployable archives for MATLAB Production Server: https://www.mathworks.com/help/compiler_sdk/mps_dev_test/create-a-deployable-archive-for-matlab-production-server.html
 
-See the README for a complete list of supported MATLAB Runtime versions for your release. 
+See the [README](README.md) for a complete list of supported MATLAB Runtime versions for your release. 
 
 ### Server Downtime
 The following measures can help reduce the time your MATLAB Production Server and deployed applications are inaccessible during this transition: 
@@ -60,7 +60,7 @@ When you upgrade the deployment, you can deploy a new virtual public cloud (VPC)
 ### Step 2. Upload the license file
 1. Log in to the Network License Manager Dashboard.
 	- *If using a new network license manager*:<ol style="list-style-type:lower-roman"><li>In the **Outputs** tab for your new stack, locate the ```MatlabProductionServerLicenseServer``` key and click the corresponding URL. This takes you to the Network License Manager for MATLAB Dashboard login page.</li><li>Log in with the username manager and the password you specified while creating the stack. </li></ol>
-	- *If using an existing network license manager*:<ol style="list-style-type:lower-roman"><li>From the EC2 instance for your network license manager, locate the public IPv4 DNS and click the corresponding URL. This takes you to the Network License Manager for MATLAB Dashboard login page.</li><li>Log in with the previously configured username and password.</li><li>Navigate to the reference architecture [documentation](https://github.com/mathworks-ref-arch/matlab-production-server-on-aws#deploy-reference-architecture-for-your-release) for the MATLAB release of your new deployment. Follow the additional configuration steps in the “How to use an existing license server in an existing VPC?” subsection, under “How do I use an existing VPC to deploy MATLAB Production Server?” in the FAQ section. (For R2023a and later, follow the steps under "Use Existing License Server in Existing VPC," under "Additional Information.")</li></ol>
+	- *If using an existing network license manager*:<ol style="list-style-type:lower-roman"><li>From the EC2 instance for your network license manager, locate the public IPv4 DNS and click the corresponding URL. This takes you to the Network License Manager for MATLAB Dashboard login page.</li><li>Log in with the previously configured username and password.</li><li>Navigate to the [reference architecture documentation](https://github.com/mathworks-ref-arch/matlab-production-server-on-aws#deploy-reference-architecture-for-your-release) for the MATLAB release of your new deployment. Follow the additional configuration steps in the “How to use an existing license server in an existing VPC?” subsection, under “How do I use an existing VPC to deploy MATLAB Production Server?” in the FAQ section. (For R2023a and later, follow the steps under "Use Existing License Server in Existing VPC," under "Additional Information.")</li></ol>
 2. Follow the instructions in the dashboard to retrieve and upload the license file. Make sure to choose the release and operating system that match your new deployment. 
 3. (Optional) Deactivate the previous license in the License Center. 
 
