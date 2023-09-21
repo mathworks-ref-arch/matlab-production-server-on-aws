@@ -40,7 +40,6 @@ To deploy the reference architecture, select your MATLAB Production Server relea
 | [R2022a](releases/R2022a/README.md) | R2022a, R2021b, R2021a, R2020b, R2020a, R2019b |
 | [R2021b](releases/R2021b/README.md) | R2021b, R2021a, R2020b, R2020a, R2019b, R2019a |
 | [R2021a](releases/R2021a/README.md) | R2021a, R2020b, R2020a, R2019b, R2019a, R2018b |
-| [R2020b](releases/R2020b/README.md) | R2020b, R2020a, R2019b, R2019a, R2018b, R2018a |
 > **Note**: MathWorks provides templates for only the six most recent releases of MATLAB Production Server. Earlier templates are removed and are no longer supported.
 # Architecture and Resources
 Deploying this reference architecture creates several resources in your
