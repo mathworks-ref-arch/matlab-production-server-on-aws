@@ -22,13 +22,12 @@ On the **Create Stack** page, specify these parameters:
 ||**Server**|
 | **Number of Server VMs**             | Choose the number of AWS instances to start for the server. <p><em>*Example*</em>: 6</p><p>For example, if you have a 24-worker MATLAB Production Server license and select `m6.xlarge` (4 cores) as the **Number of server VMs**, you need 6 worker nodes to fully use the workers in your license.</p><p>You can always underprovision the number instances, in which case you may end up using fewer workers than you are licensed for.</p>|
 | **Server VM Type** | Choose the AWS instance type to use for the server instances. All AWS instance types are supported. For more information, see [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/). <p><em>*Example*</em>: m6.xlarge</p> |
-| **Server VM Operating System** | Choose between Windows (Windows Server 2022) and Linux (Ubuntu 22) to use for the server instances.  |
-| **Create Redis ElastiCache** | Choose whether you want to create a Redis ElastiCache service. Creating this service enables you to use the persistence functionality of the server. Persistence provides a mechanism to cache data between calls to MATLAB code running on a server instance. |
-| **Deploy License Server** | Specify whether you want to deploy the Network License Manager for MATLAB. This parameter is available only if you use the deployment template for an existing VPC. <p>You can deploy a license server only if your solution uses public IP addresses. If your solution uses private IP addresses, you must separately deploy a license server in a public subnet.</p><p>If you are using an existing VPC, see the [Use Existing License Server in Existing VPC](#use-existing-license-server-in-existing-vpc) section.</p> |
+| **Choose between Windows (Windows Server) and Linux (Ubuntu)** | Choose between Windows (Windows Server 2022) and Linux (Ubuntu 22) to use for the server instances.  |
+| **Create ElastiCache for Redis** | Choose whether you want to create a Redis ElastiCache service. Creating this service enables you to use the persistence functionality of the server. Persistence provides a mechanism to cache data between calls to MATLAB code running on a server instance. |
 ||**Dashboard Login**|
-| **Username for MATLAB Production Server Dashboard** | Specify the administrator username for logging in to the MATLAB Production Server Dashboard. |
-| **Password for MATLAB Production Server and License Server** | Specify the password to use for logging in to MATLAB Production Server Dashboard and Network License Manager for MATLAB Dashboard. |
-| **Confirm Password MATLAB Production Server and License Server** | Reenter the password to use for logging in to the MATLAB Production Server Dashboard and Network License Manager for MATLAB Dashboard. |    
+| **Username for Dashboard** | Specify the administrator username for logging in to the MATLAB Production Server Dashboard. |
+| **Password for MATLAB Production Server and License Server Dashboards** | Specify the password to use for logging in to MATLAB Production Server Dashboard and Network License Manager for MATLAB Dashboard. |
+| **Confirm Password for MATLAB Production Server and License Server Dashboards** | Reenter the password to use for logging in to the MATLAB Production Server Dashboard and Network License Manager for MATLAB Dashboard. |    
 | |**Network**|
 | **Name of Existing Key Pair**          | Select the name of an existing EC2 Key Pair to allow access to all the VMs in the stack. For information about creating an Amazon EC2 key pair, see [Amazon EC2 Key Pairs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html#having-ec2-create-your-key-pair). <p><em>*Example*</em>: boston-keypair<p> |
 | **Allow Connections from IP Address** | Specify the IP address range that is allowed to connect to the dashboard that manages the server. The format for this field is IP Address/Mask. <p><em>Example</em>: 10.0.0.1/32</p> <ul><li>This is the public IP address, which can be found by searching for "what is my ip address" on the web. The mask determines the number of IP addresses to include.</li><li>A mask of 32 is a single IP address.</li><li>If you need a range of IP addresses, use a [CIDR calculator](https://www.ipaddressguide.com/cidr).</li><li>To determine which address is appropriate, contact your IT administrator.</li></ul></p> |
@@ -43,10 +42,15 @@ To deploy MATLAB Production Server onto an existing VPC, specify these additiona
 
 | Parameter Name | Value |
 |--------------- | ----- |
-| Existing VPC ID | ID of your existing VPC. |
+||**Network License Manager**|
+| **Deploy License Server** | Specify whether you want to deploy the Network License Manager for MATLAB. This parameter is available only if you use the deployment template for an existing VPC. <p>You can deploy a license server only if your solution uses public IP addresses. If your solution uses private IP addresses, you must separately deploy a license server in a public subnet.</p><p>If you are using an existing VPC, see the [Use Existing License Server in Existing VPC](#use-existing-license-server-in-existing-vpc) section.</p> |
+|**IP Address and port number of Existing Network License Manager**|<p>Specify the port number and private DNS name or private IP address of the network license manager that has already been deployed to the existing VPC. Specify it in the format <port>@<privateDNSname>, for example, 27000@ip-172-30-1-89.ec2.internal or 27000@172.30.1.89. By default, the license manager uses port 27000. Leave this field blank if you are deploying a new network license manager.</p>|
+|**Security Group of Existing Network License Manager**| Specify the security group of the network license manager that has already been deployed to the existing VPC. Leave this field blank if you are deploying a new network license manager.|
+||**Existing VPC**|
+| **Existing VPC ID** | ID of your existing VPC. |
 | IP address range of existing VPC | IP address range from the existing VPC. To find the IP address range: <ol><li>Log in to the AWS Console.</li><li>Navigate to the VPC dashboard and select your VPC.</li><li>Click the **CIDR blocks** tab.</li><li>Get the IP address range listed under **IPv4 CIDR Blocks**.</li></ol> |
-| Subnet 1 ID | ID of an existing subnet that will host the dashboard and other resources. |
-| Subnet 2 ID | ID of an existing subnet that will host the application load balancer. |
+| **Subnet 1 ID** | ID of an existing subnet that will host the dashboard and other resources. |
+| **Subnet 2 ID** | ID of an existing subnet that will host the application load balancer. |
 
 - If Subnet 1 and Subnet 2 are public, then you must connect the EC2 VPC endpoint and the AutoScaling VPC endpoint to the VPC.
 - If Subnet 1 and Subnet 2 are private, then you must either deploy a NAT gateway in the VPC, or connect all of these endpoints to the VPC:
