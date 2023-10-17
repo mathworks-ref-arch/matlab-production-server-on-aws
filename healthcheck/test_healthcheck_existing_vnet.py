@@ -73,12 +73,12 @@ def main(keypairname, password, ipAddress, SSLCertificateARN, region, platform):
                 print("success deleting the stack"+ "\n")
                 ct = datetime.datetime.now()
 
-        print("deleting the existing VPC stack")
-        # delete the existing VPC
-        deploy.delete_stack(existingstack)
-        print("success deleting the existing VPC stack")
-        ct = datetime.datetime.now()
-        print("Date time after deletion of stacks:-", ct)
+                print("deleting the existing VPC stack")
+                # delete the existing VPC
+                deploy.delete_stack(existingstack)
+                print("success deleting the existing VPC stack")
+                ct = datetime.datetime.now()
+                print("Date time after deletion of stacks:-", ct)
 
 if __name__ == "__main__":
     main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
