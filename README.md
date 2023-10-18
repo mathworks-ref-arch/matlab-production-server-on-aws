@@ -4,7 +4,7 @@
 
 Before starting, you need the following:
 
--   A MATLAB® Production Server™ license that meets the following conditions:
+-   A MATLAB® Production Server™ license that meets these conditions:
     - Linked to a MathWorks Account.
     - Concurrent license type. To check your license type, see [MathWorks License Center](https://www.mathworks.com/licensecenter/).
     - Configured to use a network license manager on the virtual network. By default, the deployment of MATLAB Production Server includes a network license manager, but you can also use an existing license manager. In either case, activate or move the license after deployment. For details, see [Configure MATLAB Production Server License for Use on the Cloud](https://www.mathworks.com/help/mps/server/configure-matlab-production-server-license-for-use-on-the-cloud.html).
@@ -79,10 +79,10 @@ The deployment template allows you to enter only one range of IP addresses that 
 The name of the security group to update is ``` matlab-production-server-cloud-stack-elb-1-sg```. Edit inbound rules to add additional IP address ranges in CIDR format for the ```HTTPS``` type.
 
 ## How do I upgrade an existing deployment to a newer MATLAB version?
-Use the instructions at the following link to upgrade an existing deployment to a newer MATLAB version: [Upgrading an Existing Deployment](UPGRADES.md)
+Use the instructions at this link to upgrade an existing deployment to a newer MATLAB version: [Upgrading an Existing Deployment](UPGRADES.md).
 
 # Enhancement Request
-Provide suggestions for additional features or capabilities using the following link: https://www.mathworks.com/solutions/cloud.html
+Provide suggestions for additional features or capabilities using this link: https://www.mathworks.com/solutions/cloud.html.
 
 # Technical Support
 If you require assistance or have a request for additional features or capabilities, please contact [MathWorks Technical Support](https://www.mathworks.com/support/contact_us.html).
