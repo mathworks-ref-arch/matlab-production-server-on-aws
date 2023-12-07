@@ -122,6 +122,7 @@ Parameters:
     Type: String
     AllowedPattern: ([0-9]+@[a-zA-Z0-9.\\-]+)?
     ConstraintDescription: If specified, must be in the form <port>@<hostname>
+    Default: ''
   ExistingLicenseServerSecurityGroup:
     Description: Specify the security group of the network license manager that has already been deployed to the existing VPC. Leave this field blank if you are deploying a new network license manager.
     Type: String
