@@ -2,7 +2,7 @@
 
 ## Overview
 
-This page shows you how to upgrade the release of a MATLAB^®^ Production Server™ deployment that is hosted on Amazon Web Services (AWS) and deployed using the reference architectures. 
+This page shows you how to upgrade the release of a MATLAB® Production Server™ deployment that is hosted on Amazon Web Services (AWS) and deployed using the reference architectures. 
 
 
 ## Prerequisites 
