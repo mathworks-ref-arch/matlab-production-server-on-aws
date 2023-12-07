@@ -1,5 +1,5 @@
 # Health check Test for MATLAB Production Server Reference Architecture AWS on Linux where existing VPC is used for stack creation.
-# Copyright 2022 The MathWorks, Inc.
+# Copyright 2022-23 The MathWorks, Inc.
 
 import refarch_testtools.deploy as deploy
 import sys
@@ -27,8 +27,7 @@ def main(keypairname, password, ipAddress, SSLCertificateARN, region, platform):
         vpc_cidr = deploy.get_stack_output_value(existingstack, 'VPCCIDR')
         subnet1 = deploy.get_stack_output_value(existingstack, 'Subnet1')
         subnet2 = deploy.get_stack_output_value(existingstack, 'Subnet2')
-        vpc_parameters = {'ExistingVPC' : vpc_id, 'ExistingVPCAddress' : vpc_cidr,
-        'ExistingSubnet1': subnet1, 'ExistingSubnet2': subnet2}
+        vpc_parameters = {'ExistingVPC' : vpc_id, 'ExistingSubnet1': subnet1, 'ExistingSubnet2': subnet2}
 
         parameters = [{'ParameterKey': 'KeyPairName', 'ParameterValue': keypairname},
                   {'ParameterKey': 'SSLCertificateARN', 'ParameterValue': SSLCertificateARN},
@@ -38,7 +37,6 @@ def main(keypairname, password, ipAddress, SSLCertificateARN, region, platform):
                   {'ParameterKey': 'Password', 'ParameterValue': password},
                   {'ParameterKey': 'ConfirmPassword', 'ParameterValue': password},
                   {"ParameterKey": "ExistingVPC","ParameterValue": vpc_id},
-                  {"ParameterKey": "ExistingVPCAddress","ParameterValue": vpc_cidr},
                   {"ParameterKey": "ExistingSubnet1","ParameterValue": subnet1},
                   {"ParameterKey": "ExistingSubnet2","ParameterValue": subnet2}]
 
