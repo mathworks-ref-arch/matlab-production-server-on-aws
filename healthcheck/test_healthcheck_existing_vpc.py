@@ -27,18 +27,8 @@ def main(keypairname, password, ipAddress, SSLCertificateARN, region, platform):
         vpc_cidr = deploy.get_stack_output_value(existingstack, 'VPCCIDR')
         subnet1 = deploy.get_stack_output_value(existingstack, 'Subnet1')
         subnet2 = deploy.get_stack_output_value(existingstack, 'Subnet2')
-        vpc_parameters = {'ExistingVPC' : vpc_id, 'ExistingSubnet1': subnet1, 'ExistingSubnet2': subnet2}
-
-        parameters = [{'ParameterKey': 'KeyPairName', 'ParameterValue': keypairname},
-                  {'ParameterKey': 'SSLCertificateARN', 'ParameterValue': SSLCertificateARN},
-                  {'ParameterKey': 'ClientIPAddress', 'ParameterValue': ipAddress},
-                  {'ParameterKey': 'WorkerSystem', 'ParameterValue': platform},
-                  {'ParameterKey': 'Username', 'ParameterValue': 'admin'},
-                  {'ParameterKey': 'Password', 'ParameterValue': password},
-                  {'ParameterKey': 'ConfirmPassword', 'ParameterValue': password},
-                  {"ParameterKey": "ExistingVPC","ParameterValue": vpc_id},
-                  {"ParameterKey": "ExistingSubnet1","ParameterValue": subnet1},
-                  {"ParameterKey": "ExistingSubnet2","ParameterValue": subnet2}]
+        vpc_parameters = {'ExistingVPC' : vpc_id, 'ExistingVPCAddress' : vpc_cidr,
+        'ExistingSubnet1': subnet1, 'ExistingSubnet2': subnet2}
 
         # Find latest MATLAB release from Github page and get template url text
         res = requests.get(f"https://github.com/mathworks-ref-arch/{ref_arch_name}/blob/master/releases/")
@@ -48,6 +38,29 @@ def main(keypairname, password, ipAddress, SSLCertificateARN, region, platform):
         for i in range(2):
             matlab_release = latest_releases[i]
             print("Testing Health Check Release: " + matlab_release + "\n")
+            if matlab_release == 'R2023a':
+                parameters = [{'ParameterKey': 'KeyPairName', 'ParameterValue': keypairname},
+                  {'ParameterKey': 'SSLCertificateARN', 'ParameterValue': SSLCertificateARN},
+                  {'ParameterKey': 'ClientIPAddress', 'ParameterValue': ipAddress},
+                  {'ParameterKey': 'WorkerSystem', 'ParameterValue': platform},
+                  {'ParameterKey': 'Username', 'ParameterValue': 'admin'},
+                  {'ParameterKey': 'Password', 'ParameterValue': password},
+                  {'ParameterKey': 'ConfirmPassword', 'ParameterValue': password},
+                  {"ParameterKey": "ExistingVPC","ParameterValue": vpc_id},
+                  {"ParameterKey": "ExistingVPCAddress","ParameterValue": vpc_cidr},
+                  {"ParameterKey": "ExistingSubnet1","ParameterValue": subnet1},
+                  {"ParameterKey": "ExistingSubnet2","ParameterValue": subnet2}]
+            else:
+                parameters = [{'ParameterKey': 'KeyPairName', 'ParameterValue': keypairname},
+                  {'ParameterKey': 'SSLCertificateARN', 'ParameterValue': SSLCertificateARN},
+                  {'ParameterKey': 'ClientIPAddress', 'ParameterValue': ipAddress},
+                  {'ParameterKey': 'WorkerSystem', 'ParameterValue': platform},
+                  {'ParameterKey': 'Username', 'ParameterValue': 'admin'},
+                  {'ParameterKey': 'Password', 'ParameterValue': password},
+                  {'ParameterKey': 'ConfirmPassword', 'ParameterValue': password},
+                  {"ParameterKey": "ExistingVPC","ParameterValue": vpc_id},
+                  {"ParameterKey": "ExistingSubnet1","ParameterValue": subnet1},
+                  {"ParameterKey": "ExistingSubnet2","ParameterValue": subnet2}]
             github_base_dir = "https://raw.githubusercontent.com/mathworks-ref-arch"
             template_url_path = f"{github_base_dir}/{ref_arch_name}/master/releases/{matlab_release}/templates/templateURL.txt"
             file = urllib.request.urlopen(template_url_path)
@@ -71,12 +84,12 @@ def main(keypairname, password, ipAddress, SSLCertificateARN, region, platform):
                 print("success deleting the stack"+ "\n")
                 ct = datetime.datetime.now()
 
-                print("deleting the existing VPC stack")
-                # delete the existing VPC
-                deploy.delete_stack(existingstack)
-                print("success deleting the existing VPC stack")
-                ct = datetime.datetime.now()
-                print("Date time after deletion of stacks:-", ct)
+        print("deleting the existing VPC stack")
+        # delete the existing VPC
+        deploy.delete_stack(existingstack)
+        print("success deleting the existing VPC stack")
+        ct = datetime.datetime.now()
+        print("Date time after deletion of stacks:-", ct)
 
 if __name__ == "__main__":
     main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
