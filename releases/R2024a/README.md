@@ -97,11 +97,13 @@ To run applications on MATLAB Production Server, you need to create applications
 # Additional Information
 
 ## Use Existing License Server in Existing VPC
-To manage MATLAB Production Server licenses, you can deploy an existing Network License Manager server for MATLAB instead of deploying a new one. To use an existing license server, on the *Deploy License Server* step of the deployment, select `No`.
+To manage MATLAB Production Server licenses, you can use an existing Network License Manager server for MATLAB instead of deploying a new one. To use an existing license server, on the *Deploy License Server* step of the deployment, select `No`.
 
 The license manager must be in the same VPC and security group as MATLAB Production Server. You must also add the security group of the server VMs to the security group of the license server.
-1. In the AWS management console, select the stack that you deployed. 
+1. In the AWS management console, select the license manager stack that you deployed. 
 1. In the stack details page, click **Resources**.
+1. In the **Logical ID** named ```MWSecurityGroupExternal```, click the corresponding URL listed under **Physical ID**
+1. In the stack details page for ```MWSecurityGroupExternal```, click **Resources**.
 1. In the **Logical ID** named ```SecurityGroup```, click the corresponding URL listed under **Physical ID** to open the security group details.
 1. Click the **Inbound Rules** tab, and then click **Edit Inbound Rules**.
 1. Click **Add Rule**.
