@@ -1,2 +1,0 @@
-https://matlab-production-server-templates.s3.amazonaws.com/r2021b_mps_refarch/mps-aws-refarch-new-vpc-cf.yml
-https://matlab-production-server-templates.s3.amazonaws.com/r2021b_mps_refarch/mps-aws-refarch-existing-vpc-cf.yml
