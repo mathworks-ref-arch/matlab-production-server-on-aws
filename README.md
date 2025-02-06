@@ -4,11 +4,13 @@
 
 Before starting, you need the following:
 
--   A MATLAB® Production Server™ license that meets the following conditions:
+-   A MATLAB® Production Server™ license that meets these conditions:
     - Linked to a MathWorks Account.
     - Concurrent license type. To check your license type, see [MathWorks License Center](https://www.mathworks.com/licensecenter/).
     - Configured to use a network license manager on the virtual network. By default, the deployment of MATLAB Production Server includes a network license manager, but you can also use an existing license manager. In either case, activate or move the license after deployment. For details, see [Configure MATLAB Production Server License for Use on the Cloud](https://www.mathworks.com/help/mps/server/configure-matlab-production-server-license-for-use-on-the-cloud.html).
 -   An Amazon Web Services™ (AWS) account. If you do not have an account, create one at https://aws.amazon.com by following the on-screen instructions.
+
+If you do not have a license, please contact your MathWorks representative [here](https://www.mathworks.com/company/aboutus/contact_us/contact_sales.html) or [request a trial license](https://www.mathworks.com/campaigns/products/trials.html?prodcode=PR). 
 
 # Costs
 You are responsible for the cost of the AWS services used when you create cloud resources using this guide. Resource settings, such as instance type, affect the cost of deployment. For cost estimates, see the pricing pages for each AWS service you will be using. Prices are subject to change.
@@ -34,20 +36,13 @@ The default MATLAB Production Server deployment template uses the Network Licens
 To deploy the reference architecture, select your MATLAB Production Server release from the table and follow the instructions to deploy the server using the provided template. A deployment of MATLAB Production Server supports MATLAB Runtime versions up to six releases back.
 | Release | Supported MATLAB Runtime Versions |
 | ------- | --------------------------------- |
-<<<<<<< Updated upstream
-=======
-| [R2024b](releases/R2025a/README.md) | R2025a, R2024b, R2024a, R2023b, R2023a, R2022b |
+| [R2025a](releases/R2025a/README.md) | R2025a, R2024b, R2024a, R2023b, R2023a, R2022b |
 | [R2024b](releases/R2024b/README.md) | R2024b, R2024a, R2023b, R2023a, R2022b, R2022a |
->>>>>>> Stashed changes
 | [R2024a](releases/R2024a/README.md) | R2024a, R2023b, R2023a, R2022b, R2022a, R2021b |
 | [R2023b](releases/R2023b/README.md) | R2023b, R2023a, R2022b, R2022a, R2021b, R2021a |
 | [R2023a](releases/R2023a/README.md) | R2023a, R2022b, R2022a, R2021b, R2021a, R2020b |
 | [R2022b](releases/R2022b/README.md) | R2022b, R2022a, R2021b, R2021a, R2020b, R2020a |
-<<<<<<< Updated upstream
-| [R2022a](releases/R2022a/README.md) | R2022a, R2021b, R2021a, R2020b, R2020a, R2019b |
-| [R2021b](releases/R2021b/README.md) | R2021b, R2021a, R2020b, R2020a, R2019b, R2019a |
-=======
->>>>>>> Stashed changes
+
 > **Note**: MathWorks provides templates for only the six most recent releases of MATLAB Production Server. Earlier templates are removed and are no longer supported.
 # Architecture and Resources
 Deploying this reference architecture creates several resources in your
@@ -66,7 +61,7 @@ resource group.
 | Auto Scaling Group                                                         | 1                   | Manages the number of identical VMs to be deployed. Each VM runs an instance of MATLAB Production Server which in turn runs multiple MATLAB workers.                                                                                                                                                                               |
 | Load Balancer                                                              | 2                   | Provides routing and load balancing services to MATLAB Production Server instances. The MATLAB Production Server Dashboard retrieves the HTTPS endpoint for making requests to the server from the load balancer resource.<p></p>                                                                                           |
 | S3 Bucket                                                                  | 1                  | S3 storage bucket created during the creation of the stack. This resource stores the applications deployed to the reference architecture.                                                                                                                                                                                                  |
-| Virtual Private Cluster (VPC)                                              | 1                   | Enables resources to communicate with each other.                                           |
+| Virtual Private Cloud (VPC)                                              | 1                   | Enables resources to communicate with each other.                                           |
 | Redis ElastiCache | 1 | Enables caching of data between calls to MATLAB code running on a server instance. |
 | CloudWatch | 1 | Enables viewing of logs. |
 
@@ -86,8 +81,11 @@ The deployment template allows you to enter only one range of IP addresses that 
 
 The name of the security group to update is ``` matlab-production-server-cloud-stack-elb-1-sg```. Edit inbound rules to add additional IP address ranges in CIDR format for the ```HTTPS``` type.
 
+## How do I upgrade an existing deployment to a newer MATLAB version?
+Use the instructions at this link to upgrade an existing deployment to a newer MATLAB version: [Upgrading an Existing Deployment](UPGRADES.md).
+
 # Enhancement Request
-Provide suggestions for additional features or capabilities using the following link: https://www.mathworks.com/solutions/cloud.html
+Provide suggestions for additional features or capabilities using this link: https://www.mathworks.com/solutions/cloud.html.
 
 # Technical Support
 If you require assistance or have a request for additional features or capabilities, please contact [MathWorks Technical Support](https://www.mathworks.com/support/contact_us.html).
