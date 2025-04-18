@@ -2,6 +2,11 @@
 
 # Deployment Steps
 Follow these steps to deploy the R2025a MATLAB Production Server reference architecture on AWS. To deploy reference architectures for other releases, see [Deploy Reference Architecture for Your Release](/README.md#deploy-reference-architecture-for-your-release). 
+
+## Prerequisites
+Before deploying MATLAB Production Server within an existing Virtual Private Cloud (VPC), you must configure the VPC to enable connectivity. For details, see [Ensure connectivity in an existing VPC](#ensure-connectivity-in-an-existing-vpc).
+
+
 ## Step 1. Launch Template
 Before launching the template, make sure that you have selected one of these supported AWS regions from the top navigation:<ul><li>**US-East (N. Virginia)**</li><li>**US-West (Oregon)**</li><li>**Europe (Ireland)**</li><li>**Asia Pacific (Tokyo)**</li></ul>
 
@@ -70,65 +75,6 @@ You also need to open these ports in your VPC:
 | `27000`, `50115` | Required for communication between the Network License Manager and the workers. |
 | `22`, `3389` | Required for Remote Desktop functionality. This can be used for troubleshooting and debugging. |
 
-### Ensure connectivity in an existing VPC
-To enable effective operation of the MATLAB Production Server Lambda functions within an existing Virtual Private Cloud (VPC), you must configure connectivity based on whether the subnet is public or private.
-
-
-#### Use public NAT gateway in a private subnet
-If are using an existing VPC and deploying in a private subnet, consider using a public NAT gateway to ensure that the Lambda functions can communicate efficiently and securely within your VPC. For more information, see [NAT gateways](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) in the AWS documentation.
-
-#### Create endpoint in a public subnet
-If are using an existing VPC and deploying in a public subnet, then you must add an endpoint to one of the public subnets in the VPC in order to allow the server to access the EC2 API. You can check if such an endpoint already exists by navigating to the AWS Portal, selecting **Endpoints**, and filtering by VPC ID for the VPC you are using for deployment. If no such endpoint is present, follow these steps to create both an EC2 endpoint and an Autoscaling endpoint:
-
-##### EC2 Endpoint
-
-1. Click **Create endpoint**.
-1. Provide a name tag for the endpoint.
-1. Select **Type** as `AWS services`.
-1. In **Services**, select `com.amazonaws.${AWS::Region}.ec2`. The region should match your VPC region. For instance, if your region is US East 1, select `com.amazonaws.us-east-1.ec2`.
-1. In **Network settings**, select the VPC you are using for deployment.
-1. Ensure that **Enable DNS** is checked to facilitate DNS resolution within the VPC.
-1. In **Subnets**, select the public subnet where the endpoint will be configured.
-1. In **Security groups**, select the security group to associate with the endpoint network interface. Ensure the following settings are applied to the security group:<p>
-    | Inbound rules  |  |
-    |---|---|
-    |Type|All TCP|
-    |Protocol|TCP|
-    |Port Range|0 - 65535|
-    |Source|VPC CIDR block range — allows internal VPC communication on any TCP port|
-
-    | Outbound rules  |  |
-    |---|---|
-    |Type|All traffic|
-    |Protocol|All|
-    |Port Range|All|
-    |Destination|Anywhere (0.0.0.0/0) — allows all outbound traffic to any destination|
-
-##### Autoscaling Endpoint
-
-1. Click **Create endpoint**.
-1. Provide a name tag for the endpoint.
-1. Select **Type** as `AWS services`.
-1. In **Services**, select `com.amazonaws.${AWS::Region}.autoscaling`. The region should match your VPC region. For instance, if your region is US East 1, select `com.amazonaws.us-east-1.ec2`.
-1. In **Network settings**, select the VPC you are using for deployment.
-1. Ensure that **Enable DNS** is checked to facilitate DNS resolution within the VPC.
-1. In **Subnets**, select the public subnet where the endpoint will be configured.
-1. In **Security groups**, select the security group to associate with the endpoint network interface. Ensure the following settings are applied to the security group:<p>
-    | Inbound rules  |  |
-    |---|---|
-    |Type|All TCP|
-    |Protocol|TCP|
-    |Port Range|0 - 65535|
-    |Source|VPC CIDR block range — allows internal VPC communication on any TCP port|
-
-    | Outbound rules  |  |
-    |---|---|
-    |Type|All traffic|
-    |Protocol|All|
-    |Port Range|All|
-    |Destination|Anywhere (0.0.0.0/0) — allows all outbound traffic to any destination|
-
-For detailed information on creating endpoints, see [Access an AWS service using an interface VPC endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html).
 
 
 ## Step 4. Create Stack
@@ -209,3 +155,72 @@ Username: **manager**<br>
 Password: Enter the password that you specified during the deployment process.
 1. Click **Administration** and then **License**.
 1. Copy the license server MAC address displayed at the top.
+
+## Ensure connectivity in an existing VPC
+If you are deploying MATLAB Production Server to an existing VPC, you must open the following ports in your VPC:
+
+
+| Port | Description |
+|------|------------ |
+| `443` | Required for communicating with the dashboard and the MATLAB execution endpoint. |
+| `8000`, `8002`, `9910` | Required for communication between the dashboard and workers within the VPC.  These ports do not need to be open to the Internet. |
+| `27000`, `50115` | Required for communication between the Network License Manager and the workers. |
+| `22`, `3389` | Required for Remote Desktop functionality. This can be used for troubleshooting and debugging. |
+
+ In addition, in order for Lambda functions present in the MATLAB Production Server reference architecture to work in an existing VPC, you must configure connectivity based on whether you choose a public or a private subnet for your deployment.
+
+
+#### Use public NAT gateway in a private subnet
+If are using an existing VPC and deploying in a private subnet, consider using a public NAT gateway associated with a public subnet. This setup allows the Lambda functions to communicate with other resources within your VPC. For more information, see [NAT gateways](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) in the AWS documentation.
+
+#### Create interface VPC endpoint when deploying to a public subnet 
+If are using an existing VPC and deploying in a public subnet, then you must add an endpoint to one of the public subnets in the VPC in order to allow the server to access the EC2 API. You can check if such an endpoint already exists by navigating to the AWS Portal, selecting **Endpoints**, and filtering by VPC ID for the VPC you are using for deployment. If no such endpoint is present, follow these steps to create both an EC2 endpoint and an Autoscaling endpoint:
+##### EC2 Endpoint
+
+1. Click **Create endpoint**.
+1. Provide a name tag for the endpoint.
+1. Select **Type** as `AWS services`.
+1. In **Services**, select `com.amazonaws.$<AWS::Region>.ec2`. The region should match your VPC region. For instance, if your region is US East 1, select `com.amazonaws.us-east-1.ec2`.
+1. In **Network settings**, select the VPC you are using for deployment.
+1. Ensure that **Enable DNS** is checked to facilitate DNS resolution within the VPC.
+1. In **Subnets**, select the public subnet where the endpoint will be configured.
+1. In **Security groups**, select the security group to associate with the endpoint network interface. Ensure the following settings are applied to the security group:<p>
+    | Inbound rules  |  |
+    |---|---|
+    |Type|All TCP|
+    |Protocol|TCP|
+    |Port Range|0 - 65535|
+    |Source|VPC CIDR block range — allows internal VPC communication on any TCP port|
+
+    | Outbound rules  |  |
+    |---|---|
+    |Type|All traffic|
+    |Protocol|All|
+    |Port Range|All|
+    |Destination|Anywhere (0.0.0.0/0) — allows all outbound traffic to any destination|
+
+##### Autoscaling Endpoint
+
+1. Click **Create endpoint**.
+1. Provide a name tag for the endpoint.
+1. Select **Type** as `AWS services`.
+1. In **Services**, select `com.amazonaws.$<AWS::Region>.autoscaling`. The region should match your VPC region. For instance, if your region is US East 1, select `com.amazonaws.us-east-1.ec2`.
+1. In **Network settings**, select the VPC you are using for deployment.
+1. Ensure that **Enable DNS** is checked to facilitate DNS resolution within the VPC.
+1. In **Subnets**, select the public subnet where the endpoint will be configured.
+1. In **Security groups**, select the security group to associate with the endpoint network interface. Ensure the following settings are applied to the security group:<p>
+    | Inbound rules  |  |
+    |---|---|
+    |Type|All TCP|
+    |Protocol|TCP|
+    |Port Range|0 - 65535|
+    |Source|VPC CIDR block range — allows internal VPC communication on any TCP port|
+
+    | Outbound rules  |  |
+    |---|---|
+    |Type|All traffic|
+    |Protocol|All|
+    |Port Range|All|
+    |Destination|Anywhere (0.0.0.0/0) — allows all outbound traffic to any destination|
+
+For detailed information on creating endpoints, see [Access an AWS service using an interface VPC endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html).
