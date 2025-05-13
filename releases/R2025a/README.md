@@ -165,75 +165,52 @@ If are using an existing VPC and deploying in a private subnet, consider using a
 
 #### Create interface VPC endpoint when deploying to a public subnet 
 If are using an existing VPC and deploying in a public subnet, then you must add an endpoint to one of the public subnets in the VPC in order to allow the server to access the EC2 API. You can check if such an endpoint already exists by navigating to the AWS Portal, selecting **Endpoints**, and filtering by VPC ID for the VPC you are using for deployment. If no such endpoint is present, follow these steps to create both an EC2 endpoint and an Autoscaling endpoint:
-##### EC2 Endpoint
+##### Create Endpoints
 
 1. Click **Create endpoint**.
 1. Provide a name tag for the endpoint.
 1. Select **Type** as `AWS services`.
-1. In **Services**, select `com.amazonaws.<AWS Region>.ec2`. The region should match your VPC region. For instance, if your region is US East 1, select `com.amazonaws.us-east-1.ec2`.
+1. In **Services**, select `com.amazonaws.<AWS Region>.<Endpoint Type>`. The region should match your VPC region. For instance, if your region is US East 1 and you are creating an EC2 endpoint, select `com.amazonaws.us-east-1.ec2`.
 1. In **Network settings**, select the VPC you are using for deployment.
 1. Ensure that **Enable DNS** is checked to facilitate DNS resolution within the VPC.
 1. In **Subnets**, select the public subnet where the endpoint will be configured.
 1. In **Security groups**, select the security group to associate with the endpoint network interface. Ensure the following settings are applied to the security group:<p>
-<table>
-    <tr>
-      <th colspan="2">Inbound rules</th>
-    </tr>
-    <tr>
-      <td><b>Type</b></td><td>All TCP</td>
-    </tr>
-    <tr>
-      <td><b>Protocol</b></td><td>TCP</td>
-    </tr>
-    <tr>
-      <td><b>Port Range</b></td><td>0 - 65535</td>
-    </tr>
-    <tr>
-      <td><b>Source</b></td><td>VPC CIDR block range — allows internal VPC communication on any TCP port</td>
-    </tr>
-</table>
+  <table>
+      <tr>
+        <th colspan="2">Inbound rules</th>
+      </tr>
+      <tr>
+        <td><b>Type</b></td><td>All TCP</td>
+      </tr>
+      <tr>
+        <td><b>Protocol</b></td><td>TCP</td>
+      </tr>
+      <tr>
+        <td><b>Port Range</b></td><td>0 - 65535</td>
+      </tr>
+      <tr>
+        <td><b>Source</b></td><td>VPC CIDR block range — allows internal VPC communication on any TCP port</td>
+      </tr>
+  </table>
 
-<table>
-    <tr>
-      <th colspan="2">Outbound rules</th>
-    </tr>
-    <tr>
-      <td><b>Type</b></td><td>All traffic</td>
-    </tr>
-    <tr>
-      <td><b>Protocol</b></td><td>All</td>
-    </tr>
-    <tr>
-      <td><b>Port Range</b></td><td>All</td>
-    </tr>
-    <tr>
-      <td><b>Destination</b></td><td>Anywhere (0.0.0.0/0) — allows all outbound traffic to any destination</td>
-    </tr>
-</table>
-</p>
+  <table>
+      <tr>
+        <th colspan="2">Outbound rules</th>
+      </tr>
+      <tr>
+        <td><b>Type</b></td><td>All traffic</td>
+      </tr>
+      <tr>
+        <td><b>Protocol</b></td><td>All</td>
+      </tr>
+      <tr>
+        <td><b>Port Range</b></td><td>All</td>
+      </tr>
+      <tr>
+        <td><b>Destination</b></td><td>Anywhere (0.0.0.0/0) — allows all outbound traffic to any destination</td>
+      </tr>
+  </table>
+  </p>
 
-##### Autoscaling Endpoint
-
-1. Click **Create endpoint**.
-1. Provide a name tag for the endpoint.
-1. Select **Type** as `AWS services`.
-1. In **Services**, select `com.amazonaws.<AWS Region>.autoscaling`. The region should match your VPC region. For instance, if your region is US East 1, select `com.amazonaws.us-east-1.autoscaling`.
-1. In **Network settings**, select the VPC you are using for deployment.
-1. Ensure that **Enable DNS** is checked to facilitate DNS resolution within the VPC.
-1. In **Subnets**, select the public subnet where the endpoint will be configured.
-1. In **Security groups**, select the security group to associate with the endpoint network interface. Ensure the following settings are applied to the security group:<p>
-    | Inbound rules  |  |
-    |---|---|
-    |Type|All TCP|
-    |Protocol|TCP|
-    |Port Range|0 - 65535|
-    |Source|VPC CIDR block range — allows internal VPC communication on any TCP port|
-
-    | Outbound rules  |  |
-    |---|---|
-    |Type|All traffic|
-    |Protocol|All|
-    |Port Range|All|
-    |Destination|Anywhere (0.0.0.0/0) — allows all outbound traffic to any destination|
-
+Repeat this process for an `ec2` endpoint and an `autoscaling` endpoint. For example, if your VPC region is US East 1, you would select `com.amazonaws.us-east-1.ec2` in step 4 for the `ec2` endpoint, and repeat the steps, selecting `com.amazonaws.us-east-1.autoscaling`.
 For detailed information on creating endpoints, see [Access an AWS service using an interface VPC endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html).
