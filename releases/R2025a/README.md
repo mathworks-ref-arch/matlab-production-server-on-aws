@@ -170,7 +170,7 @@ If are using an existing VPC and deploying in a public subnet, then you must add
 1. Click **Create endpoint**.
 1. Provide a name tag for the endpoint.
 1. Select **Type** as `AWS services`.
-1. In **Services**, select `com.amazonaws.$<AWS Region>.ec2`. The region should match your VPC region. For instance, if your region is US East 1, select `com.amazonaws.us-east-1.ec2`.
+1. In **Services**, select `com.amazonaws.<AWS Region>.ec2`. The region should match your VPC region. For instance, if your region is US East 1, select `com.amazonaws.us-east-1.ec2`.
 1. In **Network settings**, select the VPC you are using for deployment.
 1. Ensure that **Enable DNS** is checked to facilitate DNS resolution within the VPC.
 1. In **Subnets**, select the public subnet where the endpoint will be configured.
@@ -217,7 +217,7 @@ If are using an existing VPC and deploying in a public subnet, then you must add
 1. Click **Create endpoint**.
 1. Provide a name tag for the endpoint.
 1. Select **Type** as `AWS services`.
-1. In **Services**, select `com.amazonaws.$<AWS Region>.autoscaling`. The region should match your VPC region. For instance, if your region is US East 1, select `com.amazonaws.us-east-1.ec2`.
+1. In **Services**, select `com.amazonaws.<AWS Region>.autoscaling`. The region should match your VPC region. For instance, if your region is US East 1, select `com.amazonaws.us-east-1.autoscaling`.
 1. In **Network settings**, select the VPC you are using for deployment.
 1. Ensure that **Enable DNS** is checked to facilitate DNS resolution within the VPC.
 1. In **Subnets**, select the public subnet where the endpoint will be configured.
