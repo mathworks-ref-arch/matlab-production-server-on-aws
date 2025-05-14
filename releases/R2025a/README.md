@@ -43,6 +43,8 @@ On the **Create Stack** page, specify these parameters:
 
 >**Note**: If you are deploying to a new VPC, skip this step.
 
+Before deploying MATLAB Production Server within an existing Virtual Private Cloud (VPC), you must configure the VPC to enable connectivity. For details, see [Ensure connectivity in an existing VPC](#ensure-connectivity-in-an-existing-vpc).
+
 To deploy MATLAB Production Server onto an existing VPC, specify these additional parameters.
 
 | Parameter Name | Value |
@@ -56,15 +58,6 @@ To deploy MATLAB Production Server onto an existing VPC, specify these additiona
 | IP address range of existing VPC | IP address range from the existing VPC. To find the IP address range: <ol><li>Log in to the AWS Console.</li><li>Navigate to the VPC dashboard and select your VPC.</li><li>Click the **CIDR blocks** tab.</li><li>Get the IP address range listed under **IPv4 CIDR Blocks**.</li></ol> |
 | **Subnet 1 ID** | ID of an existing subnet that will host the dashboard and other resources. |
 | **Subnet 2 ID** | ID of an existing subnet that will host the application load balancer. |
-
-- If Subnet 1 and Subnet 2 are public, then you must connect the EC2 VPC endpoint and the AutoScaling VPC endpoint to the VPC.
-- If Subnet 1 and Subnet 2 are private, then you must either deploy a NAT gateway in the VPC, or connect all of these endpoints to the VPC:
-    - EC2 VPC endpoint
-    - AutoScaling VPC endpoint
-    - S3 VPC endpoint
-    - CloudFormation endpoint 
-
-For more information about creating endpoints, see the [AWS documentation](https://docs.aws.amazon.com/vpc/latest/userguide/vpce-interface.html#create-interface-endpoint).
 
 
 ## Step 4. Create Stack
@@ -161,16 +154,22 @@ If you are deploying MATLAB Production Server to an existing VPC, you must open 
 
 
 #### Use public NAT gateway when deploying to a private subnet
-If are using an existing VPC and deploying in a private subnet, consider using a public NAT gateway associated with a public subnet. This setup allows the Lambda functions to communicate with AWS services. For more information, see [NAT gateways](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) in the AWS documentation.
+If are using an existing VPC and deploying in a private subnet, consider using a public NAT gateway associated with a public subnet. This setup allows the Lambda functions to communicate with AWS services. For more information, see [NAT gateways](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) in the AWS documentation. Alternatively, connect all of these endpoints to the VPC:
+    - EC2 VPC endpoint
+    - AutoScaling VPC endpoint
+    - S3 VPC endpoint
+    - CloudFormation endpoint
 
 #### Create interface VPC endpoint when deploying to a public subnet 
 If are using an existing VPC and deploying in a public subnet, then you must add an endpoint to one of the public subnets in the VPC in order to allow the server to access the EC2 API. You can check if such an endpoint already exists by navigating to the AWS Portal, selecting **Endpoints**, and filtering by VPC ID for the VPC you are using for deployment. If no such endpoint is present, follow these steps to create both an EC2 endpoint and an Autoscaling endpoint:
 ##### Create Endpoints
 
+Repeat the following process for both an `ec2` endpoint and an `autoscaling` endpoint. For example, if your VPC region is US East 1, you would select `com.amazonaws.us-east-1.ec2` in step 4 for the `ec2` endpoint, then repeat the steps, selecting `com.amazonaws.us-east-1.autoscaling` the second time.
+
 1. Click **Create endpoint**.
 1. Provide a name tag for the endpoint.
 1. Select **Type** as `AWS services`.
-1. In **Services**, select `com.amazonaws.<AWS Region>.<Endpoint Type>`. The region should match your VPC region. For instance, if your region is US East 1 and you are creating an EC2 endpoint, select `com.amazonaws.us-east-1.ec2`.
+1. In **Services**, select `com.amazonaws.<AWS Region>.<Endpoint Type>`. The region should match your VPC region. For instance, if your region is US East 1 and you are creating an EC2 endpoint, select `com.amazonaws.us-east-1.ec2`. If your region is US East 2 and you are creating an autoscaling endpoint, select select `com.amazonaws.us-east-2.autoscaling`.
 1. In **Network settings**, select the VPC you are using for deployment.
 1. Ensure that **Enable DNS** is checked to facilitate DNS resolution within the VPC.
 1. In **Subnets**, select the public subnet where the endpoint will be configured.
@@ -212,5 +211,4 @@ If are using an existing VPC and deploying in a public subnet, then you must add
   </table>
   </p>
 
-Repeat this process for an `ec2` endpoint and an `autoscaling` endpoint. For example, if your VPC region is US East 1, you would select `com.amazonaws.us-east-1.ec2` in step 4 for the `ec2` endpoint, and repeat the steps, selecting `com.amazonaws.us-east-1.autoscaling`.
 For detailed information on creating endpoints, see [Access an AWS service using an interface VPC endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html).
