@@ -166,9 +166,9 @@ Repeat the following process for both an EC2 endpoint and an Autoscaling endpoin
 1. Provide a name tag for the endpoint.
 1. Select **Type** as `AWS services`.
 1. In **Services**, select `com.amazonaws.<AWS Region>.<Endpoint Type>`. 
-    - The region should match your VPC region. For instance, if your region is US East 1 and you are creating an EC2 endpoint, select `com.amazonaws.us-east-1.ec2`.
-    -  If you're creating an EC2 endpoint, select `ec2` as the endpoint type. For example, if your region is US East 1 and you are creating an EC2 endpoint, select `com.amazonaws.us-east-1.ec2`.  
-    - If you're creating an Autoscaling endpoint, select 'autoscaling' as the endpoint type. For example, If your region is US East 2 and you are creating an autoscaling endpoint, select `com.amazonaws.us-east-2.autoscaling`.
+    - The region should match your VPC region. For instance, if your region is US-East (N. Virginia) and you are creating an EC2 endpoint, select `com.amazonaws.us-east-1.ec2`.
+    -  If you're creating an EC2 endpoint, select `ec2` as the endpoint type. For example, if your region is Europe (Ireland) and you are creating an EC2 endpoint, select `com.amazonaws.eu-west-1.ec2`.  
+    - If you're creating an Autoscaling endpoint, select `autoscaling` as the endpoint type. For example, If your region is Europe (Ireland) and you are creating an Autoscaling endpoint, select `com.amazonaws.eu-west-1.autoscaling`.
 1. In **Network settings**, select the VPC you are using for deployment.
 1. Ensure that **Enable DNS** is checked to facilitate DNS resolution within the VPC.
 1. In **Subnets**, select the public subnet where the endpoint will be configured.
