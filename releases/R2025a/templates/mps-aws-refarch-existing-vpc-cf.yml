@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: MATLAB Production Server R2023b with Existing VPC
+Description: MATLAB Production Server R2025a with Existing VPC
 Parameters:
   KeyPairName:
     Type: AWS::EC2::KeyPair::KeyName
@@ -7,7 +7,7 @@ Parameters:
     ConstraintDescription: Must be the name of an existing EC2 Key Pair.
   ClientIPAddress:
     Description: >-
-      Allowed IP addresses that can connect to the MATLAB Production Server VM(s) and the dashboard VM. Specify the range in CIDR notation in the format IP Address/Suffix, where Suffix is an integer between
+      Allowed IP addresses that can connect to the MATLAB Production Server VM(s), dashboard VM and MATLAB execution endpoint. Specify the range in CIDR notation in the format IP Address/Suffix, where Suffix is an integer between
       0 and 32. Example: 10.0.0.1/24.
     Type: String
     MinLength: 9
@@ -122,6 +122,7 @@ Parameters:
     Type: String
     AllowedPattern: ([0-9]+@[a-zA-Z0-9.\\-]+)?
     ConstraintDescription: If specified, must be in the form <port>@<hostname>
+    Default: ''
   ExistingLicenseServerSecurityGroup:
     Description: Specify the security group of the network license manager that has already been deployed to the existing VPC. Leave this field blank if you are deploying a new network license manager.
     Type: String
@@ -261,8 +262,8 @@ Conditions:
 Mappings:
   VarMap:
     NestedTemplateURLs:
-      vpsStackURL: https://matlab-production-server-templates.s3.amazonaws.com/r2023b_mps_refarch/mw-aws-refarch-vpc-stack-cf.yml
-      productionServerStackURL: https://matlab-production-server-templates.s3.amazonaws.com/r2023b_mps_refarch/mw-aws-refarch-cf.yml
+      vpsStackURL: https://matlab-production-server-templates.s3.amazonaws.com/r2025a_mps_refarch/mw-aws-refarch-vpc-stack-cf.yml
+      productionServerStackURL: https://matlab-production-server-templates.s3.amazonaws.com/r2025a_mps_refarch/mw-aws-refarch-cf.yml
 Outputs:
   MATLABProductionServerAdminVM:
     Description: Admin VM that hosts MATLAB Production Server dashboard
@@ -307,7 +308,7 @@ Resources:
   MatlabProductionServerCustomParamLambdaFunctionStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://matlab-production-server-templates.s3.amazonaws.com/r2023b_mps_refarch/CustomParamLambda.yml
+      TemplateURL: https://matlab-production-server-templates.s3.amazonaws.com/r2025a_mps_refarch/CustomParamLambda.yml
       Parameters:
         ExistingVPC: !Ref 'ExistingVPC'
   MatlabProductionServerLicenseServerStack:
@@ -316,7 +317,7 @@ Resources:
       - MatlabProductionServerCustomParamLambdaFunctionStack
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://network-license-manager-for-matlab-on-aws.s3.amazonaws.com/R2023a/license-manager-template.json
+      TemplateURL: https://network-license-manager-for-matlab-on-aws.s3.amazonaws.com/R2025a/license-manager-template.json
       Parameters:
         VPC: !Ref 'ExistingVPC'
         Subnet: !Ref 'ExistingSubnet1'
@@ -328,6 +329,7 @@ Resources:
         SSHKeyName: !Ref 'KeyPairName'
         Password: !Ref 'Password'
         ConfirmPassword: !Ref 'ConfirmPassword'
+        EnablePublicIPAddress: !Ref 'AllowPublicIP'
   MatlabProductionServerResourcesStack:
     DependsOn:
       - MatlabProductionServerCustomParamLambdaFunctionStack
