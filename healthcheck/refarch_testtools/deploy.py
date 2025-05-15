@@ -22,7 +22,7 @@ def deploy_stack(template_url, template_parameters, region, stack_base_name="ref
         StackName=stack_name,
         TemplateURL=template_url,
         Parameters=template_parameters,
-        Capabilities=["CAPABILITY_IAM"])
+        Capabilities=["CAPABILITY_IAM", "CAPABILITY_AUTO_EXPAND"])
 
     try:
         _wait_for_create_complete(cloudformation, stack)
