@@ -1,9 +1,10 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
-name: MATLAB Production Server Ref Arch AWS new VPC Health Check Test us-west on Ubuntu
+name: MATLAB Production Server Ref Arch AWS new VPC Health Check Test us-east on Ubuntu
 
 on:
-# push:
+ workflow_dispatch:
+ push:
  schedule:
     - cron: '0 15 * * 1'
 permissions:
@@ -15,10 +16,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.8
+    - name: Set up Python 3.13
       uses: actions/setup-python@v2
       with:
-        python-version: 3.8
+        python-version: '3.13'
     - name: Configure AWS credentials via OIDC
       uses: aws-actions/configure-aws-credentials@v4
       with:
