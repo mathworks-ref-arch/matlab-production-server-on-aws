@@ -22,7 +22,7 @@ jobs:
     - name: Configure AWS credentials via OIDC
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: ${{ secrets.GITHUB_OIDC_ROLE_ARN }}
+        role-to-assume: ${{ secrets.oidc_role_arn }}
         aws-region: eu-west-1
     - name: Install dependencies
       run: |
