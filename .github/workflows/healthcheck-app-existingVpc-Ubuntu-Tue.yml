@@ -24,6 +24,7 @@ jobs:
       with:
         role-to-assume: ${{ secrets.oidc_role_arn_ireland }}
         aws-region: eu-west-1
+        role-duration-seconds: 7200
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
