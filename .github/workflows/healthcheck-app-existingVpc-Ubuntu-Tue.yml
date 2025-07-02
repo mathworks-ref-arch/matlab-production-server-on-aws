@@ -22,7 +22,7 @@ jobs:
     - name: Configure AWS credentials via OIDC
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: ${{ secrets.oidc_role_arn_ireland }}
+        role-to-assume: ${{ secrets.oidc_role_arn }}
         aws-region: eu-west-1
         role-duration-seconds: 7200
     - name: Install dependencies
@@ -40,6 +40,5 @@ jobs:
     - name: MPS Ref Arch AWS existing VPC Health Check Test eu-west on Ubuntu
       run: |
         cd healthcheck
-        export AWS_REGION=eu-west-1
-        python test_healthcheck_existing_vpc.py ${{ secrets.OidcKeyPairNameIreland }} ${{ secrets.lmpassword }} ${{ secrets.ipaddress }} ${{ secrets.OidcSSLCertificateARNIreland }} "eu-west-1" "Ubuntu"
+        python test_healthcheck_existing_vpc.py ${{ secrets.OIDCKeyPairNameIreland }} ${{ secrets.lmpassword }} ${{ secrets.ipaddress }} ${{ secrets.OIDCSSLCertificateARNIreland }} "eu-west-1" "Ubuntu"
 
