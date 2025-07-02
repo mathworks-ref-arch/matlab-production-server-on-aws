@@ -11,7 +11,7 @@ import boto3
 from botocore.exceptions import WaiterError
 
 _logger = logging.getLogger("deploy")
-
+logging.basicConfig(level=logging.INFO)
 
 def deploy_stack(template_url, template_parameters, region, stack_base_name="refArchTest", extra_parameters={}):
     stack_name = _create_stack_name(stack_base_name)
