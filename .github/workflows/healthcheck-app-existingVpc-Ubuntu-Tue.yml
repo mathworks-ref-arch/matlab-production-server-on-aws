@@ -3,7 +3,7 @@
 name: MATLAB Production Server Ref Arch AWS existing VPC Health Check Test eu-west on Ubuntu
 
 on:
- push:
+ workflow_dispatch:
  schedule:
     - cron: '0 15 * * 2'
 jobs:
@@ -12,10 +12,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.8
+    - name: Set up Python 3.13
       uses: actions/setup-python@v2
       with:
-        python-version: 3.8
+        python-version: '3.13'
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
