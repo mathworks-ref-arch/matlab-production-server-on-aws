@@ -29,6 +29,7 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: MPS Ref Arch AWS new VPC Health Check Test ap-northeast on Windows
+      run: |
         cd healthcheck
         export AWS_ACCESS_KEY_ID=${{ secrets.aws_access_key_id }}
         export AWS_SECRET_ACCESS_KEY=${{ secrets.aws_secret_access_key }}
