@@ -40,5 +40,5 @@ jobs:
       run: |
         cd healthcheck
         export AWS_REGION=eu-west-1
-        python test_healthcheck_existing_vpc.py ${{ secrets.KeyPairNameIreland }} ${{ secrets.lmpassword }} ${{ secrets.ipaddress }} ${{ secrets.SSLCertificateARNIreland }} "eu-west-1" "Ubuntu"
+        python test_healthcheck_existing_vpc.py ${{ secrets.OidcKeyPairNameIreland }} ${{ secrets.lmpassword }} ${{ secrets.ipaddress }} ${{ secrets.SSLCertificateARNIreland }} "eu-west-1" "Ubuntu"
 
