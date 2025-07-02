@@ -22,7 +22,7 @@ jobs:
     - name: Configure AWS credentials via OIDC
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: ${{ secrets.oidc_role_arn }}
+        role-to-assume: ${{ secrets.oidc_role_arn_ireland }}
         aws-region: eu-west-1
         role-duration-seconds: 7200
     - name: Install dependencies
