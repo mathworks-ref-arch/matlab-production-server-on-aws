@@ -22,7 +22,7 @@ jobs:
     - name: Configure AWS credentials via OIDC
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: ${{ secrets.oidc_role_arn }}
+        role-to-assume: ${{ secrets.oidc_role_arn_ireland }}
         aws-region: eu-west-1
     - name: Install dependencies
       run: |
@@ -40,5 +40,5 @@ jobs:
       run: |
         cd healthcheck
         export AWS_REGION=eu-west-1
-        python test_healthcheck_existing_vpc.py ${{ secrets.OidcKeyPairNameIreland }} ${{ secrets.lmpassword }} ${{ secrets.ipaddress }} ${{ secrets.SSLCertificateARNIreland }} "eu-west-1" "Ubuntu"
+        python test_healthcheck_existing_vpc.py ${{ secrets.OidcKeyPairNameIreland }} ${{ secrets.lmpassword }} ${{ secrets.ipaddress }} ${{ secrets.OidcSSLCertificateARNIreland }} "eu-west-1" "Ubuntu"
 
