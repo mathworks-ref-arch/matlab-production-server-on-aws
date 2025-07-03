@@ -4,7 +4,6 @@ name: MATLAB Production Server Ref Arch AWS existing VPC Health Check Test us-ea
 
 on:
  workflow_dispatch:
- push:
  schedule:
     - cron: '0 15 * * 4'
 permissions:

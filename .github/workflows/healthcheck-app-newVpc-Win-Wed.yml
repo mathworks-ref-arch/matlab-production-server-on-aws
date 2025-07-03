@@ -4,7 +4,6 @@ name: MATLAB Production Server Ref Arch AWS new VPC Health Check Test ap-northea
 
 on:
  workflow_dispatch:
- push:
  schedule:
     - cron: '0 15 * * 3'
 permissions:
