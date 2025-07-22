@@ -40,5 +40,5 @@ jobs:
     - name: MPS  Ref Arch AWS existing VPC Health Check Test us-east on Windows
       run: |
         cd healthcheck
-        python test_healthcheck_existing_vpc.py ${{ secrets.OIDCKeyPairNameVirginia }} ${{ secrets.lmpassword }} ${{ secrets.ipaddress }} ${{ secrets.OIDCSSLCertificateARNVirginia }} "us-east-1" "Windows"
+        python test_healthcheck_existing_vpc.py ${{ secrets.OIDCKeyPairNameVirginia }} ${{ secrets.lmpassword }} ${{ secrets.OIDCSSLCertificateARNVirginia }} "us-east-1" "Windows"
 

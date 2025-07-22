@@ -40,5 +40,5 @@ jobs:
     - name: MPS Ref Arch AWS existing VPC Health Check Test eu-west on Ubuntu
       run: |
         cd healthcheck
-        python test_healthcheck_existing_vpc.py ${{ secrets.OIDCKeyPairNameIreland }} ${{ secrets.lmpassword }} ${{ secrets.ipaddress }} ${{ secrets.OIDCSSLCertificateARNIreland }} "eu-west-1" "Ubuntu"
+        python test_healthcheck_existing_vpc.py ${{ secrets.OIDCKeyPairNameIreland }} ${{ secrets.lmpassword }} ${{ secrets.OIDCSSLCertificateARNIreland }} "eu-west-1" "Ubuntu"
 

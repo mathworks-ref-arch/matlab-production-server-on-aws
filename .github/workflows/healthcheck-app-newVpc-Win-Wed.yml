@@ -40,5 +40,5 @@ jobs:
     - name: MPS Ref Arch AWS new VPC Health Check Test ap-northeast on Windows
       run: |
         cd healthcheck
-        python test_healthcheck_new_vnet.py ${{ secrets.OIDCKeyPairNameTokyo }} ${{ secrets.lmpassword }} ${{ secrets.ipaddress }} ${{ secrets.OIDCSSLCertificateARNTokyo }} "ap-northeast-1" "Windows"
+        python test_healthcheck_new_vnet.py ${{ secrets.OIDCKeyPairNameTokyo }} ${{ secrets.lmpassword }} ${{ secrets.OIDCSSLCertificateARNTokyo }} "ap-northeast-1" "Windows"
 

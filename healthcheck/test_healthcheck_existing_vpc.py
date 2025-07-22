@@ -11,11 +11,11 @@ import random
 from datetime import date
 import time
 
-def main(keypairname, password, ipAddress, SSLCertificateARN, region, platform):
+def main(keypairname, password, SSLCertificateARN, region, platform):
 
         # Reference architectures in production.
         ref_arch_name = 'matlab-production-server-on-aws'
-
+        ipAddress = requests.get("https://api.ipify.org").text + "/32"
         vpc_parameters  = [{"ParameterKey": "AllowPublicIP",
                             "ParameterValue": "Yes"}]
 
@@ -95,4 +95,4 @@ def main(keypairname, password, ipAddress, SSLCertificateARN, region, platform):
         print("Date time after deletion of stacks:-", ct)
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
+    main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
