@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: MATLAB Production Server R2023a with new VPC
+Description: MATLAB Production Server R2025b with Existing VPC
 Parameters:
   KeyPairName:
     Type: AWS::EC2::KeyPair::KeyName
@@ -7,7 +7,7 @@ Parameters:
     ConstraintDescription: Must be the name of an existing EC2 Key Pair.
   ClientIPAddress:
     Description: >-
-      Allowed IP addresses that can connect to the MATLAB Production Server VM(s) and the dashboard VM. Specify the range in CIDR notation in the format IP Address/Suffix, where Suffix is an integer between
+      Allowed IP addresses that can connect to the MATLAB Production Server VM(s), dashboard VM and MATLAB execution endpoint. Specify the range in CIDR notation in the format IP Address/Suffix, where Suffix is an integer between
       0 and 32. Example: 10.0.0.1/24.
     Type: String
     MinLength: 9
@@ -31,33 +31,64 @@ Parameters:
     Description: >-
       Specify the EC2 instance type to use for a server VM. Each server VM runs multiple MATLAB workers. The default number of workers is 4. Choosing a VM size where the number of vCPUs on a VM matches
       the number of workers is recommended. For more information on Amazon EC2 instance types and sizes, see https://aws.amazon.com/ec2/instance-types/
-    Default: m5.xlarge
+    Default: m6i.xlarge
     Type: String
     AllowedValues:
-      - m5.xlarge
-      - m5.2xlarge
-      - m5.4xlarge
-      - m5.8xlarge
-      - m5.12xlarge
-      - m5.16xlarge
-      - m5.24xlarge
-      - m5.metal
-      - c5.xlarge
-      - c5.2xlarge
-      - c5.4xlarge
-      - c5.9xlarge
-      - c5.12xlarge
-      - c5.18xlarge
-      - c5.24xlarge
-      - c5.metal
-      - r5.xlarge
-      - r5.2xlarge
-      - r5.4xlarge
-      - r5.8xlarge
-      - r5.12xlarge
-      - r5.16xlarge
-      - r5.24xlarge
-      - r5.metal
+      - m6i.xlarge
+      - m6i.2xlarge
+      - m6i.4xlarge
+      - m6i.8xlarge
+      - m6i.12xlarge
+      - m6i.16xlarge
+      - m6i.24xlarge
+      - m6i.metal
+      - m6a.xlarge
+      - m6a.xlarge
+      - m6a.2xlarge
+      - m6a.4xlarge
+      - m6a.8xlarge
+      - m6a.12xlarge
+      - m6a.16xlarge
+      - m6a.24xlarge
+      - m6a.metal
+      - c6i.xlarge
+      - c6i.2xlarge
+      - c6i.4xlarge
+      - c6i.8xlarge
+      - c6i.12xlarge
+      - c6i.16xlarge
+      - c6i.24xlarge
+      - c6i.32xlarge
+      - c6i.metal
+      - c6a.xlarge
+      - c6a.2xlarge
+      - c6a.4xlarge
+      - c6a.8xlarge
+      - c6a.12xlarge
+      - c6a.16xlarge
+      - c6a.24xlarge
+      - c6a.32xlarge
+      - c6a.48xlarge
+      - c6a.metal
+      - r6i.xlarge
+      - r6i.2xlarge
+      - r6i.4xlarge
+      - r6i.8xlarge
+      - r6i.12xlarge
+      - r6i.16xlarge
+      - r6i.24xlarge
+      - r6i.32xlarge
+      - r6i.metal
+      - r6a.xlarge
+      - r6a.2xlarge
+      - r6a.4xlarge
+      - r6a.8xlarge
+      - r6a.12xlarge
+      - r6a.16xlarge
+      - r6a.24xlarge
+      - r6a.32xlarge
+      - r6a.48xlarge
+      - r6a.metal
     ConstraintDescription: Specify worker instance type.
   WorkerSystem:
     Description: Choose between Windows (Windows Server) and Linux (Ubuntu).
@@ -77,11 +108,30 @@ Parameters:
       - 'Yes'
       - 'No'
     Default: 'No'
+  DeployLicenseServer:
+    Description: Specify whether you want to deploy the Network License Manager for MATLAB
+    Type: String
+    AllowedValues:
+      - 'Yes'
+      - 'No'
+    Default: 'Yes'
+  ExistingLicenseServer:
+    Description: >-
+      Specify the port number and private DNS name or private IP address of the network license manager that has already been deployed to the existing VPC. Specify it in the format <port>@<privateDNSname>,
+      for example, 27000@ip-172-30-1-89.ec2.internal or 27000@172.30.1.89. By default, the license manager uses port 27000. Leave this field blank if you are deploying a new network license manager.
+    Type: String
+    AllowedPattern: ([0-9]+@[a-zA-Z0-9.\\-]+)?
+    ConstraintDescription: If specified, must be in the form <port>@<hostname>
+    Default: ''
+  ExistingLicenseServerSecurityGroup:
+    Description: Specify the security group of the network license manager that has already been deployed to the existing VPC. Leave this field blank if you are deploying a new network license manager.
+    Type: String
+    Default: ''
   Username:
     Description: Specify the administrator username to log in to the MATLAB Production Server dashboard.
     Type: String
-    AllowedPattern: ^[^'\s\$]*$
-    ConstraintDescription: Must not contain whitespace, single quote or $ sign
+    AllowedPattern: ^[^'\s]*$
+    ConstraintDescription: Must not contain whitespace or single quote
   Password:
     Description: Specify the administrator password to log in to the MATLAB Production Server dashboard and MATLAB license server dashboard.
     Type: String
@@ -92,6 +142,21 @@ Parameters:
     Description: Reenter the administrator password to log in to the MATLAB Production Server dashboard and MATLAB license server dashboard.
     Type: String
     NoEcho: true
+  ExistingVPC:
+    Description: ID of your existing VPC where you want to deploy this solution.
+    Type: AWS::EC2::VPC::Id
+    ConstraintDescription: Must be the ID of an existing VPC.
+    Default: ''
+  ExistingSubnet1:
+    Description: ID of an existing subnet that will host the dashboard and cloud resources.
+    Type: AWS::EC2::Subnet::Id
+    ConstraintDescription: Must be the ID of an existing Subnet.
+    Default: ''
+  ExistingSubnet2:
+    Description: ID of an existing subnet that will host the load balancer.
+    Type: AWS::EC2::Subnet::Id
+    ConstraintDescription: Must be the ID of an existing Subnet.
+    Default: ''
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -115,6 +180,18 @@ Metadata:
           - ClientIPAddress
           - AllowPublicIP
           - SSLCertificateARN
+      - Label:
+          default: Network License Manager
+        Parameters:
+          - DeployLicenseServer
+          - ExistingLicenseServer
+          - ExistingLicenseServerSecurityGroup
+      - Label:
+          default: Existing VPC
+        Parameters:
+          - ExistingVPC
+          - ExistingSubnet1
+          - ExistingSubnet2
     ParameterLabels:
       KeyPairName:
         default: Name of Existing Key Pair
@@ -125,7 +202,7 @@ Metadata:
       WorkerInstanceType:
         default: Server VM Type
       WorkerSystem:
-        default: Choose between Windows (Windows Server) and Linux (Ubuntu).
+        default: Choose between Windows (Windows Server) and Linux (Ubuntu)
       Username:
         default: Username for Dashboard
       Password:
@@ -138,6 +215,18 @@ Metadata:
         default: Make Solution Available over Internet
       EnablePersistence:
         default: Create ElastiCache for Redis
+      DeployLicenseServer:
+        default: Deploy License Server
+      ExistingLicenseServer:
+        default: IP Address and port number of Existing Network License Manager
+      ExistingLicenseServerSecurityGroup:
+        default: Security Group of Existing Network License Manager
+      ExistingVPC:
+        default: Existing VPC ID
+      ExistingSubnet1:
+        default: Subnet 1 ID
+      ExistingSubnet2:
+        default: Subnet 2 ID
 Rules:
   matchPasswords:
     Assertions:
@@ -145,22 +234,46 @@ Rules:
           - !Ref 'Password'
           - !Ref 'ConfirmPassword'
         AssertDescription: Passwords do not match
+  checkLicenseServerIPAddressProvided:
+    RuleCondition: !Not
+      - !Equals
+        - !Ref 'ExistingLicenseServer'
+        - ''
+    Assertions:
+      - Assert: !Equals
+          - 'No'
+          - !Ref 'DeployLicenseServer'
+        AssertDescription: Cannot deploy a new license server when you provide a port@hostname for an existing license server.
+  checkSubnetInVPC:
+    Assertions:
+      - Assert: !EachMemberEquals
+          - !ValueOfAll
+            - AWS::EC2::Subnet::Id
+            - VpcId
+          - !Ref 'ExistingVPC'
+        AssertDescription: Subnet must exist in the VPC you have selected
 Conditions:
   DoPublicIP: !Equals
     - 'Yes'
     - !Ref 'AllowPublicIP'
+  DoDeployLicenseServer: !Equals
+    - 'Yes'
+    - !Ref 'DeployLicenseServer'
 Mappings:
   VarMap:
     NestedTemplateURLs:
-      vpsStackURL: https://matlab-production-server-templates.s3.amazonaws.com/r2023a_mps_refarch/mw-aws-refarch-vpc-stack-cf.yml
-      productionServerStackURL: https://matlab-production-server-templates.s3.amazonaws.com/r2023a_mps_refarch/mw-aws-refarch-cf.yml
+      vpsStackURL: https://matlab-production-server-templates.s3.amazonaws.com/r2025b_mps_refarch/mw-aws-refarch-vpc-stack-cf.yml
+      productionServerStackURL: https://matlab-production-server-templates.s3.amazonaws.com/r2025b_mps_refarch/mw-aws-refarch-cf.yml
 Outputs:
   MATLABProductionServerAdminVM:
     Description: Admin VM that hosts MATLAB Production Server dashboard
     Value: !GetAtt 'MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerAdminVM'
   MatlabProductionServerLicenseServer:
-    Description: Address of the network license manager for MATLAB dashboard
-    Value: !GetAtt 'MatlabProductionServerLicenseServerStack.Outputs.ServerAddress'
+    Description: Address of the MATLAB network license manager dashboard
+    Value: !If
+      - DoDeployLicenseServer
+      - !GetAtt 'MatlabProductionServerLicenseServerStack.Outputs.ServerAddress'
+      - License Server was not deployed with this stack
   MATLABProductionServerApplicationsBucket:
     Description: S3 Bucket for MATLAB Production Server applications (CTF files)
     Value: !GetAtt 'MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerApplicationsBucket'
@@ -192,33 +305,34 @@ Outputs:
     Description: Load balancer to change SSL certificate for MATLAB Production Server dashboard
     Value: !GetAtt 'MatlabProductionServerResourcesStack.Outputs.MATLABProductionServerDashboardLoadBalancer'
 Resources:
-  MatlabProductionServerVPCStack:
+  MatlabProductionServerCustomParamLambdaFunctionStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !FindInMap
-        - VarMap
-        - NestedTemplateURLs
-        - vpsStackURL
+      TemplateURL: https://matlab-production-server-templates.s3.amazonaws.com/r2025b_mps_refarch/CustomParamLambda.yml
       Parameters:
-        AllowPublicIP: !Ref 'AllowPublicIP'
+        ExistingVPC: !Ref 'ExistingVPC'
   MatlabProductionServerLicenseServerStack:
+    Condition: DoDeployLicenseServer
+    DependsOn:
+      - MatlabProductionServerCustomParamLambdaFunctionStack
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://network-license-manager-for-matlab-on-aws.s3.amazonaws.com/R2022a/license-manager-template.json
+      TemplateURL: https://network-license-manager-for-matlab-on-aws.s3.amazonaws.com/R2025b/license-manager-template.json
       Parameters:
-        VPC: !GetAtt 'MatlabProductionServerVPCStack.Outputs.VPCID'
-        Subnet: !GetAtt 'MatlabProductionServerVPCStack.Outputs.PublicSubnet'
+        VPC: !Ref 'ExistingVPC'
+        Subnet: !Ref 'ExistingSubnet1'
         ClientIPAddress: !If
           - DoPublicIP
           - !Ref 'ClientIPAddress'
-          - !GetAtt 'MatlabProductionServerVPCStack.Outputs.VPCCIDR'
+          - !GetAtt 'MatlabProductionServerCustomParamLambdaFunctionStack.Outputs.MatlabProductionServerVPCCIDR'
         ServerInstanceType: t2.micro
         SSHKeyName: !Ref 'KeyPairName'
         Password: !Ref 'Password'
         ConfirmPassword: !Ref 'ConfirmPassword'
+        EnablePublicIPAddress: !Ref 'AllowPublicIP'
   MatlabProductionServerResourcesStack:
     DependsOn:
-      - MatlabProductionServerVPCStack
+      - MatlabProductionServerCustomParamLambdaFunctionStack
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: !FindInMap
@@ -226,10 +340,10 @@ Resources:
         - NestedTemplateURLs
         - productionServerStackURL
       Parameters:
-        ExistingVPC: !GetAtt 'MatlabProductionServerVPCStack.Outputs.VPCID'
-        ExistingVPCAddress: !GetAtt 'MatlabProductionServerVPCStack.Outputs.VPCCIDR'
-        ExistingSubnet1: !GetAtt 'MatlabProductionServerVPCStack.Outputs.Subnet1'
-        ExistingSubnet2: !GetAtt 'MatlabProductionServerVPCStack.Outputs.Subnet2'
+        ExistingVPC: !Ref 'ExistingVPC'
+        ExistingVPCAddress: !GetAtt 'MatlabProductionServerCustomParamLambdaFunctionStack.Outputs.MatlabProductionServerVPCCIDR'
+        ExistingSubnet1: !Ref 'ExistingSubnet1'
+        ExistingSubnet2: !Ref 'ExistingSubnet2'
         KeyPairName: !Ref 'KeyPairName'
         ClientIPAddress: !Ref 'ClientIPAddress'
         AllowPublicIP: !Ref 'AllowPublicIP'
@@ -241,5 +355,15 @@ Resources:
         Username: !Ref 'Username'
         Password: !Ref 'Password'
         ConfirmPassword: !Ref 'ConfirmPassword'
-        LicenseServerSecurityGroup: !GetAtt 'MatlabProductionServerLicenseServerStack.Outputs.SecurityGroup'
-        LicenseServerPrivateDNS: !GetAtt 'MatlabProductionServerLicenseServerStack.Outputs.ServerPrivateDNS'
+        LicenseServerSecurityGroup: !If
+          - DoDeployLicenseServer
+          - !GetAtt 'MatlabProductionServerLicenseServerStack.Outputs.SecurityGroup'
+          - !Ref 'ExistingLicenseServerSecurityGroup'
+        LicenseServerPrivateDNS: !If
+          - DoDeployLicenseServer
+          - !Join
+            - ''
+            - - 27000
+              - '@'
+              - !GetAtt 'MatlabProductionServerLicenseServerStack.Outputs.ServerPrivateDNS'
+          - !Ref 'ExistingLicenseServer'
