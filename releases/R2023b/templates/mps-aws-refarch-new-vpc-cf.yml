@@ -235,7 +235,7 @@ Resources:
   MatlabProductionServerLicenseServerStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://network-license-manager-for-matlab-on-aws.s3.amazonaws.com/R2023a/license-manager-template.json
+      TemplateURL: https://network-license-manager-for-matlab-on-aws.s3.amazonaws.com/R2023b/license-manager-template.json
       Parameters:
         VPC: !GetAtt 'MatlabProductionServerVPCStack.Outputs.VPCID'
         Subnet: !GetAtt 'MatlabProductionServerVPCStack.Outputs.PublicSubnet'

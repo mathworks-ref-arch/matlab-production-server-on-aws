@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: MATLAB Production Server R2023b with Existing VPC
+Description: MATLAB Production Server R2024a with Existing VPC
 Parameters:
   KeyPairName:
     Type: AWS::EC2::KeyPair::KeyName
@@ -261,8 +261,8 @@ Conditions:
 Mappings:
   VarMap:
     NestedTemplateURLs:
-      vpsStackURL: https://matlab-production-server-templates.s3.amazonaws.com/r2023b_mps_refarch/mw-aws-refarch-vpc-stack-cf.yml
-      productionServerStackURL: https://matlab-production-server-templates.s3.amazonaws.com/r2023b_mps_refarch/mw-aws-refarch-cf.yml
+      vpsStackURL: https://matlab-production-server-templates.s3.amazonaws.com/r2024a_mps_refarch/mw-aws-refarch-vpc-stack-cf.yml
+      productionServerStackURL: https://matlab-production-server-templates.s3.amazonaws.com/r2024a_mps_refarch/mw-aws-refarch-cf.yml
 Outputs:
   MATLABProductionServerAdminVM:
     Description: Admin VM that hosts MATLAB Production Server dashboard
@@ -307,7 +307,7 @@ Resources:
   MatlabProductionServerCustomParamLambdaFunctionStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://matlab-production-server-templates.s3.amazonaws.com/r2023b_mps_refarch/CustomParamLambda.yml
+      TemplateURL: https://matlab-production-server-templates.s3.amazonaws.com/r2024a_mps_refarch/CustomParamLambda.yml
       Parameters:
         ExistingVPC: !Ref 'ExistingVPC'
   MatlabProductionServerLicenseServerStack:
@@ -316,7 +316,7 @@ Resources:
       - MatlabProductionServerCustomParamLambdaFunctionStack
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://network-license-manager-for-matlab-on-aws.s3.amazonaws.com/R2023a/license-manager-template.json
+      TemplateURL: https://network-license-manager-for-matlab-on-aws.s3.amazonaws.com/R2024a/license-manager-template.json
       Parameters:
         VPC: !Ref 'ExistingVPC'
         Subnet: !Ref 'ExistingSubnet1'

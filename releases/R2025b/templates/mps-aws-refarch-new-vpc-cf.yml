@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: MATLAB Production Server R2022b with new VPC
+Description: MATLAB Production Server R2025b with new VPC
 Parameters:
   KeyPairName:
     Type: AWS::EC2::KeyPair::KeyName
@@ -7,7 +7,7 @@ Parameters:
     ConstraintDescription: Must be the name of an existing EC2 Key Pair.
   ClientIPAddress:
     Description: >-
-      Allowed IP addresses that can connect to the MATLAB Production Server VM(s) and the dashboard VM. Specify the range in CIDR notation in the format IP Address/Suffix, where Suffix is an integer between
+      Allowed IP addresses that can connect to the MATLAB Production Server VM(s), dashboard VM and MATLAB execution endpoint. Specify the range in CIDR notation in the format IP Address/Suffix, where Suffix is an integer between
       0 and 32. Example: 10.0.0.1/24.
     Type: String
     MinLength: 9
@@ -31,33 +31,64 @@ Parameters:
     Description: >-
       Specify the EC2 instance type to use for a server VM. Each server VM runs multiple MATLAB workers. The default number of workers is 4. Choosing a VM size where the number of vCPUs on a VM matches
       the number of workers is recommended. For more information on Amazon EC2 instance types and sizes, see https://aws.amazon.com/ec2/instance-types/
-    Default: m5.xlarge
+    Default: m6i.xlarge
     Type: String
     AllowedValues:
-      - m5.xlarge
-      - m5.2xlarge
-      - m5.4xlarge
-      - m5.8xlarge
-      - m5.12xlarge
-      - m5.16xlarge
-      - m5.24xlarge
-      - m5.metal
-      - c5.xlarge
-      - c5.2xlarge
-      - c5.4xlarge
-      - c5.9xlarge
-      - c5.12xlarge
-      - c5.18xlarge
-      - c5.24xlarge
-      - c5.metal
-      - r5.xlarge
-      - r5.2xlarge
-      - r5.4xlarge
-      - r5.8xlarge
-      - r5.12xlarge
-      - r5.16xlarge
-      - r5.24xlarge
-      - r5.metal
+      - m6i.xlarge
+      - m6i.2xlarge
+      - m6i.4xlarge
+      - m6i.8xlarge
+      - m6i.12xlarge
+      - m6i.16xlarge
+      - m6i.24xlarge
+      - m6i.metal
+      - m6a.xlarge
+      - m6a.xlarge
+      - m6a.2xlarge
+      - m6a.4xlarge
+      - m6a.8xlarge
+      - m6a.12xlarge
+      - m6a.16xlarge
+      - m6a.24xlarge
+      - m6a.metal
+      - c6i.xlarge
+      - c6i.2xlarge
+      - c6i.4xlarge
+      - c6i.8xlarge
+      - c6i.12xlarge
+      - c6i.16xlarge
+      - c6i.24xlarge
+      - c6i.32xlarge
+      - c6i.metal
+      - c6a.xlarge
+      - c6a.2xlarge
+      - c6a.4xlarge
+      - c6a.8xlarge
+      - c6a.12xlarge
+      - c6a.16xlarge
+      - c6a.24xlarge
+      - c6a.32xlarge
+      - c6a.48xlarge
+      - c6a.metal
+      - r6i.xlarge
+      - r6i.2xlarge
+      - r6i.4xlarge
+      - r6i.8xlarge
+      - r6i.12xlarge
+      - r6i.16xlarge
+      - r6i.24xlarge
+      - r6i.32xlarge
+      - r6i.metal
+      - r6a.xlarge
+      - r6a.2xlarge
+      - r6a.4xlarge
+      - r6a.8xlarge
+      - r6a.12xlarge
+      - r6a.16xlarge
+      - r6a.24xlarge
+      - r6a.32xlarge
+      - r6a.48xlarge
+      - r6a.metal
     ConstraintDescription: Specify worker instance type.
   WorkerSystem:
     Description: Choose between Windows (Windows Server) and Linux (Ubuntu).
@@ -78,7 +109,7 @@ Parameters:
       - 'No'
     Default: 'No'
   Username:
-    Description: Specify the administrator user name to log in to the MATLAB Production Server dashboard.
+    Description: Specify the administrator username to log in to the MATLAB Production Server dashboard.
     Type: String
     AllowedPattern: ^[^'\s\$]*$
     ConstraintDescription: Must not contain whitespace, single quote or $ sign
@@ -152,8 +183,8 @@ Conditions:
 Mappings:
   VarMap:
     NestedTemplateURLs:
-      vpsStackURL: https://matlab-production-server-templates.s3.amazonaws.com/r2022b_mps_refarch/mw-aws-refarch-vpc-stack-cf.yml
-      productionServerStackURL: https://matlab-production-server-templates.s3.amazonaws.com/r2022b_mps_refarch/mw-aws-refarch-cf.yml
+      vpsStackURL: https://matlab-production-server-templates.s3.amazonaws.com/r2025b_mps_refarch/mw-aws-refarch-vpc-stack-cf.yml
+      productionServerStackURL: https://matlab-production-server-templates.s3.amazonaws.com/r2025b_mps_refarch/mw-aws-refarch-cf.yml
 Outputs:
   MATLABProductionServerAdminVM:
     Description: Admin VM that hosts MATLAB Production Server dashboard
@@ -204,7 +235,7 @@ Resources:
   MatlabProductionServerLicenseServerStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://network-license-manager-for-matlab-on-aws.s3.amazonaws.com/R2022a/license-manager-template.json
+      TemplateURL: https://network-license-manager-for-matlab-on-aws.s3.amazonaws.com/R2025b/license-manager-template.json
       Parameters:
         VPC: !GetAtt 'MatlabProductionServerVPCStack.Outputs.VPCID'
         Subnet: !GetAtt 'MatlabProductionServerVPCStack.Outputs.PublicSubnet'
@@ -242,4 +273,8 @@ Resources:
         Password: !Ref 'Password'
         ConfirmPassword: !Ref 'ConfirmPassword'
         LicenseServerSecurityGroup: !GetAtt 'MatlabProductionServerLicenseServerStack.Outputs.SecurityGroup'
-        LicenseServerPrivateDNS: !GetAtt 'MatlabProductionServerLicenseServerStack.Outputs.ServerPrivateDNS'
+        LicenseServerPrivateDNS: !Join
+          - ''
+          - - 27000
+            - '@'
+            - !GetAtt 'MatlabProductionServerLicenseServerStack.Outputs.ServerPrivateDNS'
