@@ -84,6 +84,8 @@ You are now ready to use MATLAB Production Server on AWS.
 
 To run applications on MATLAB Production Server, you need to create applications using MATLAB Compiler SDK. For more information, see [Create Deployable Archive for MATLAB Production Server](https://www.mathworks.com/help/compiler_sdk/mps_dev_test/create-a-deployable-archive-for-matlab-production-server.html). 
 
+>**Note:** Wait until status of MATLAB Execution Endpoint on the Overview page of the Dashboard is `Ready` before uploading deployable archives to the server.
+
 # Additional Information
 
 ## Use Existing License Server in Existing VPC
