@@ -27,7 +27,7 @@ On the **Create Stack** page, specify these parameters:
 ||**Server**|
 | **Number of Server VMs**             | Choose the number of AWS instances to start for the server. <p><em>*Example*</em>: 6</p><p>For example, if you have a 24-worker MATLAB Production Server license and select `m6.xlarge` (4 cores) as the **Number of server VMs**, you need 6 worker nodes to fully use the workers in your license.</p><p>You can always underprovision the number instances, in which case you may end up using fewer workers than you are licensed for.</p>|
 | **Server VM Type** | Choose the AWS instance type to use for the server instances. All AWS instance types are supported. For more information, see [Amazon EC2 Instance Types](https://aws.amazon.com/ec2/instance-types/). <p><em>*Example*</em>: m6.xlarge</p> |
-| **Server VM Operating System** | Choose between Windows (Windows Server 2022) and Linux (Ubuntu 22) to use for the server instances.  |
+| **Server VM Operating System** | Choose between Windows (Windows Server 2022) and Linux (Ubuntu 24.04) to use for the server instances. |
 | **Create ElastiCache for Redis** | Choose whether you want to create a Redis ElastiCache service. Creating this service enables you to use the persistence functionality of the server. Persistence provides a mechanism to cache data between calls to MATLAB code running on a server instance. |
 ||**Dashboard Login**|
 | **Username for MATLAB Production Server Dashboard** | Specify the administrator username for logging in to the MATLAB Production Server Dashboard. |
