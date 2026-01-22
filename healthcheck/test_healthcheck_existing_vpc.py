@@ -1,7 +1,8 @@
 # Health check Test for MATLAB Production Server Reference Architecture AWS on Linux where existing VPC is used for stack creation.
-# Copyright 2022-23 The MathWorks, Inc.
+# Copyright 2022-26 The MathWorks, Inc.
 
 import refarch_testtools.deploy as deploy
+import refarch_testtools.git_utils as git_utils
 import sys
 import re
 import requests
@@ -15,6 +16,8 @@ def main(keypairname, password, SSLCertificateARN, region, platform):
 
         # Reference architectures in production.
         ref_arch_name = 'matlab-production-server-on-aws'
+        branch_name = git_utils.get_current_branch()
+        
         ipAddress = requests.get("https://api.ipify.org").text + "/32"
         vpc_parameters  = [{"ParameterKey": "AllowPublicIP",
                             "ParameterValue": "Yes"}]
@@ -31,7 +34,7 @@ def main(keypairname, password, SSLCertificateARN, region, platform):
         'ExistingSubnet1': subnet1, 'ExistingSubnet2': subnet2}
 
         # Find latest MATLAB release from Github page and get template url text
-        res = requests.get(f"https://github.com/mathworks-ref-arch/{ref_arch_name}/blob/master/releases/")
+        res = requests.get(f"https://github.com/mathworks-ref-arch/{ref_arch_name}/blob/{branch_name}/releases/")
 
         latest_releases = [
             re.findall(r"releases/(R\d{4}[ab]\b)", res.text)[-1],
@@ -65,7 +68,7 @@ def main(keypairname, password, SSLCertificateARN, region, platform):
                   {"ParameterKey": "ExistingSubnet1","ParameterValue": subnet1},
                   {"ParameterKey": "ExistingSubnet2","ParameterValue": subnet2}]
             github_base_dir = "https://raw.githubusercontent.com/mathworks-ref-arch"
-            template_url_path = f"{github_base_dir}/{ref_arch_name}/master/releases/{matlab_release}/templates/templateURL.txt"
+            template_url_path = f"{github_base_dir}/{ref_arch_name}/{branch_name}/releases/{matlab_release}/templates/templateURL.txt"
             file = urllib.request.urlopen(template_url_path)
             template_url = file.read().decode("utf-8").rstrip()
             split_template_url = template_url.split("\n")

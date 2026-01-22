@@ -1,7 +1,8 @@
 # Health check Test for MATLAB Production Server Reference Architecture AWS on Linux where new VPC is created.
-# Copyright 2022 The MathWorks, Inc.
+# Copyright 2022-2026 The MathWorks, Inc.
 
 import refarch_testtools.deploy as deploy
+import refarch_testtools.git_utils as git_utils
 import sys
 import re
 import requests
@@ -13,6 +14,8 @@ from datetime import date
 def main(keypairname, password, SSLCertificateARN, region, platform):
     # Reference architectures in production.
     ref_arch_name = 'matlab-production-server-on-aws'
+    branch_name = git_utils.get_current_branch()
+    
     ipAddress = requests.get("https://api.ipify.org").text + "/32"
     parameters = [{'ParameterKey': 'KeyPairName', 'ParameterValue': keypairname},
                   {'ParameterKey': 'SSLCertificateARN', 'ParameterValue': SSLCertificateARN},
@@ -29,7 +32,7 @@ def main(keypairname, password, SSLCertificateARN, region, platform):
                   {'ParameterKey': 'ConfirmPassword', 'ParameterValue': password}]
 
     # Find latest MATLAB release from Github page and get template url text
-    res = requests.get(f"https://github.com/mathworks-ref-arch/{ref_arch_name}/blob/master/releases/")
+    res = requests.get(f"https://github.com/mathworks-ref-arch/{ref_arch_name}/blob/{branch_name}/releases/")
 
     latest_releases = [
         re.findall(r"releases/(R\d{4}[ab]\b)", res.text)[-1],
@@ -39,7 +42,7 @@ def main(keypairname, password, SSLCertificateARN, region, platform):
         matlab_release = latest_releases[i]
         print("Testing Health Check Release: " + matlab_release + "\n")
         github_base_dir = "https://raw.githubusercontent.com/mathworks-ref-arch"
-        template_url_path = f"{github_base_dir}/{ref_arch_name}/master/releases/{matlab_release}/templates/templateURL.txt"
+        template_url_path = f"{github_base_dir}/{ref_arch_name}/{branch_name}/releases/{matlab_release}/templates/templateURL.txt"
         file = urllib.request.urlopen(template_url_path)
         template_url = file.readline().decode("utf-8").rstrip()
 
