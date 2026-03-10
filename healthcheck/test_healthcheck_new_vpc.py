@@ -3,7 +3,6 @@
 import refarch_testtools.deploy as deploy
 import refarch_testtools.git_utils as git_utils
 import sys
-import re
 import requests
 import datetime
 import urllib.request
@@ -30,12 +29,24 @@ def main(keypairname, password, SSLCertificateARN, region, platform, git_token):
         'Authorization': f'token {git_token}'
     }
     
-    # Find latest MATLAB release from Github page and get template url text
-    res = requests.get(f"https://github.com/mathworks-ref-arch/{ref_arch_name}/blob/{branch_name}/releases/", headers=headers)
-    latest_releases = [
-        re.findall(r"releases/(R\d{4}[ab]\b)", res.text)[-1],
-        re.findall(r"releases/(R\d{4}[ab]\b)", res.text)[-2]
-    ]
+    # Use GitHub API which has clearer rate limits
+    api_url = f"https://api.github.com/repos/mathworks-ref-arch/{ref_arch_name}/contents/releases?ref={branch_name}"
+    res = requests.get(api_url, headers=headers)
+    
+    if res.status_code != 200:
+        print(f"Error fetching releases from GitHub API: {res.status_code}")
+        print(f"Response: {res.text}")
+        raise Exception(f"Failed to fetch releases from GitHub API")
+    
+    files = res.json()
+    # Extract release names from file names and sort to get latest
+    releases = sorted([f['name'] for f in files if f['name'].startswith('R')], reverse=True)
+    
+    if len(releases) < 2:
+        print(f"Warning: Found only {len(releases)} release(s). Expected at least 2.")
+    
+    # Get the two latest releases
+    latest_releases = releases[:2]
     
     for matlab_release in latest_releases:
         print(f"Testing Health Check Release: {matlab_release}\n")
