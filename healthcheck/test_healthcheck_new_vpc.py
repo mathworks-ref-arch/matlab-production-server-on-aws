@@ -1,17 +1,17 @@
 # Health check Test for MATLAB Production Server Reference Architecture AWS on Linux where new VPC is created.
 # Copyright 2022-2026 The MathWorks, Inc.
-
 import refarch_testtools.deploy as deploy
 import refarch_testtools.git_utils as git_utils
 import sys
 import re
 import requests
 import datetime
-import urllib
+import urllib.request
 import random
 from datetime import date
 
-def main(keypairname, password, SSLCertificateARN, region, platform):
+
+def main(keypairname, password, SSLCertificateARN, region, platform, git_token):
     # Reference architectures in production.
     ref_arch_name = 'matlab-production-server-on-aws'
     branch_name = git_utils.get_current_branch()
@@ -24,50 +24,49 @@ def main(keypairname, password, SSLCertificateARN, region, platform):
                   {'ParameterKey': 'Username', 'ParameterValue': 'admin'},
                   {'ParameterKey': 'Password', 'ParameterValue': password},
                   {'ParameterKey': 'ConfirmPassword', 'ParameterValue': password}]
-    parameters1 = [{'ParameterKey': 'KeyPairName', 'ParameterValue': keypairname},
-                  {'ParameterKey': 'SSLCertificateARN', 'ParameterValue': SSLCertificateARN},
-                  {'ParameterKey': 'ClientIPAddress', 'ParameterValue': ipAddress},
-                  {'ParameterKey': 'WorkerSystem', 'ParameterValue': platform},
-                  {'ParameterKey': 'Password', 'ParameterValue': password},
-                  {'ParameterKey': 'ConfirmPassword', 'ParameterValue': password}]
-
+    
+    # With a GitHub token
+    headers = {
+        'Authorization': f'token {git_token}'
+    }
+    
     # Find latest MATLAB release from Github page and get template url text
-    res = requests.get(f"https://github.com/mathworks-ref-arch/{ref_arch_name}/blob/{branch_name}/releases/")
-
+    res = requests.get(f"https://github.com/mathworks-ref-arch/{ref_arch_name}/blob/{branch_name}/releases/", headers=headers)
     latest_releases = [
         re.findall(r"releases/(R\d{4}[ab]\b)", res.text)[-1],
         re.findall(r"releases/(R\d{4}[ab]\b)", res.text)[-2]
     ]
-    for i in range(2):
-        matlab_release = latest_releases[i]
-        print("Testing Health Check Release: " + matlab_release + "\n")
+    
+    for matlab_release in latest_releases:
+        print(f"Testing Health Check Release: {matlab_release}\n")
         github_base_dir = "https://raw.githubusercontent.com/mathworks-ref-arch"
         template_url_path = f"{github_base_dir}/{ref_arch_name}/{branch_name}/releases/{matlab_release}/templates/templateURL.txt"
         file = urllib.request.urlopen(template_url_path)
         template_url = file.readline().decode("utf-8").rstrip()
-
-        stack_name = "mps-refarch-health-check-" + matlab_release + date.today().strftime('%m-%d-%Y') + str(random.randint(1,101))
+        stack_name = f"mps-refarch-health-check-{matlab_release}{date.today().strftime('%m-%d-%Y')}{random.randint(1, 101)}"
         ct = datetime.datetime.now()
-        print("Date time before deployment of stack:-", ct)
-
+        print(f"Date time before deployment of stack: {ct}")
+        
+        stack = None
         try:
-            print("deploying the stack")
-
-            if matlab_release == "R2021a" :
-                stack = deploy.deploy_stack(template_url, parameters1, region, stack_name)
-            else :
-                stack = deploy.deploy_stack(template_url, parameters, region, stack_name)
-
-            print("success deploying the stack")
+            print("Deploying the stack")
+            stack = deploy.deploy_stack(template_url, parameters, region, stack_name)
+            print("Success deploying the stack")
         except Exception as e:
-            raise (e)
+            print(f"Error deploying stack: {e}")
+            raise e
         finally:
-            # delete the stack
-            print("deleting the stack")
-            deploy.delete_stack(stack)
-            print("success deleting the stack" + "\n")
-            ct = datetime.datetime.now()
-            print("Date time after deployment and deletion of stack:-", ct)
+            if stack is not None:
+                print("Deleting the stack")
+                deploy.delete_stack(stack)
+                print("Success deleting the stack\n")
+                ct = datetime.datetime.now()
+                print(f"Date time after deployment and deletion of stack: {ct}")
+
 
 if __name__ == '__main__':
-    main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+    if len(sys.argv) < 7:
+        print("Error: Missing required arguments")
+        print("Usage: python script.py <keypairname> <password> <SSLCertificateARN> <region> <platform> <git_token>")
+        sys.exit(1)
+    main(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
