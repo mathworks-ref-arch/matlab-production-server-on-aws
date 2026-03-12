@@ -26,7 +26,6 @@ def main(keypairname, password, SSLCertificateARN, region, platform, git_token):
     time.sleep(90)
     
     vpc_id = deploy.get_stack_output_value(existingstack, 'VPCID')
-    vpc_cidr = deploy.get_stack_output_value(existingstack, 'VPCCIDR')
     subnet1 = deploy.get_stack_output_value(existingstack, 'Subnet1')
     subnet2 = deploy.get_stack_output_value(existingstack, 'Subnet2')
     
@@ -68,7 +67,6 @@ def main(keypairname, password, SSLCertificateARN, region, platform, git_token):
                       {'ParameterKey': 'Password', 'ParameterValue': password},
                       {'ParameterKey': 'ConfirmPassword', 'ParameterValue': password},
                       {'ParameterKey': 'ExistingVPC', 'ParameterValue': vpc_id},
-                      {'ParameterKey': 'ExistingVPCAddress', 'ParameterValue': vpc_cidr},
                       {'ParameterKey': 'ExistingSubnet1', 'ParameterValue': subnet1},
                       {'ParameterKey': 'ExistingSubnet2', 'ParameterValue': subnet2}]
         
