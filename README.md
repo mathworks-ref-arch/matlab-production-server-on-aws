@@ -33,7 +33,7 @@ The default MATLAB Production Server deployment template uses the Network Licens
 1. If necessary, [request a service limit increase](https://console.aws.amazon.com/support/home#/case/create?issueType=service-limit-increase) for the Amazon EC2 instance type or VPCs.  You might need to do this if you already have existing deployments that use that instance type or you think you might exceed the [default limit](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html) with this deployment.
 
 # Deploy Reference Architecture for Your Release
-To deploy the reference architecture, select your MATLAB Production Server release from the table and follow the instructions to deploy the server using the provided template. A deployment of MATLAB Production Server supports MATLAB Runtime versions up to five releases back.
+To deploy the reference architecture, select your MATLAB Production Server release from the table and follow the instructions to deploy the server using the provided template. A deployment of MATLAB Production Server supports MATLAB Runtime versions up to five releases back. See [Release Notes](release-notes.md) for more information about each release.
 | Release | Supported MATLAB Runtime Versions | Status |
 | ------- | --------------------------------- | ------ |
 | [R2026a](releases/R2026a/README.md) | R2026a, R2025b, R2025a, R2024b, R2024a, R2023b | ✅ Template available. |
