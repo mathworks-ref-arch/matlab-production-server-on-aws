@@ -33,22 +33,22 @@ The default MATLAB Production Server deployment template uses the Network Licens
 1. If necessary, [request a service limit increase](https://console.aws.amazon.com/support/home#/case/create?issueType=service-limit-increase) for the Amazon EC2 instance type or VPCs.  You might need to do this if you already have existing deployments that use that instance type or you think you might exceed the [default limit](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html) with this deployment.
 
 # Deploy Reference Architecture for Your Release
-To deploy the reference architecture, select your MATLAB Production Server release from the table and follow the instructions to deploy the server using the provided template. A deployment of MATLAB Production Server supports MATLAB Runtime versions up to six releases back.
+To deploy the reference architecture, select your MATLAB Production Server release from the table and follow the instructions to deploy the server using the provided template. A deployment of MATLAB Production Server supports MATLAB Runtime versions up to five releases back.
 | Release | Supported MATLAB Runtime Versions | Status |
 | ------- | --------------------------------- | ------ |
+| [R2026a](releases/R2026a/README.md) | R2026a, R2025b, R2025a, R2024b, R2024a, R2023b | ✅ Template available. |
 | [R2025b](releases/R2025b/README.md) | R2025b, R2025a, R2024b, R2024a, R2023b, R2023a | ✅ Template available. |
 | [R2025a](releases/R2025a/README.md) | R2025a, R2024b, R2024a, R2023b, R2023a, R2022b | ✅ Template available. |
-| [R2024b](releases/R2024b/README.md) | R2024b, R2024a, R2023b, R2023a, R2022b, R2022a | ✅ Template available. |
+| [R2024b](releases/R2024b/README.md) | R2024b, R2024a, R2023b, R2023a, R2022b, R2022a | ⚠️ Template will be removed in March 2027. |
 | [R2024a](releases/R2024a/README.md) | R2024a, R2023b, R2023a, R2022b, R2022a, R2021b | ⚠️ Template will be removed in September 2026. |
-| [R2023b](releases/R2023b/README.md) | R2023b, R2023a, R2022b, R2022a, R2021b, R2021a | ⚠️ Template will be removed in March 2026. |
 
-> **Note**: MathWorks provides templates for only the six most recent releases of MATLAB Production Server. Earlier templates are removed and are no longer supported.
+> **Note**: MathWorks provides templates for only the five most recent releases of MATLAB Production Server. Earlier templates are removed and are no longer supported.
 # Architecture and Resources
 Deploying this reference architecture creates several resources in your
 resource group.
 
 
-![Architecture](/releases/R2025b/images/mps_ref_arch_aws_diagram.png?raw=true)
+![Architecture](/releases/R2026a/images/mps_ref_arch_aws_diagram.png?raw=true)
 
 *Architecture on AWS*
 
@@ -89,3 +89,5 @@ Provide suggestions for additional features or capabilities using this link: htt
 # Technical Support
 If you require assistance or have a request for additional features or capabilities, please contact [MathWorks Technical Support](https://www.mathworks.com/support/contact_us.html).
 
+# Release Notes
+For version history and changes in each release, see [Release Notes](release-notes.md).
