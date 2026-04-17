@@ -1,5 +1,8 @@
 ## Release Notes for MATLAB Production Server on AWS
 
+### R2026a
+- You can now deploy MATLAB Production Server R2026a using the Amazon Web Services reference architecture.
+
 ### R2025b
 - You can now deploy MATLAB Production Server R2025b using the Amazon Web Services reference architecture.
 - Starting November 2025, Linux servers use Ubuntu 24.04 for improved performance and security.
